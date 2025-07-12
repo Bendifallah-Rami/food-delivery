@@ -101,8 +101,12 @@ export default function Navbar() {
             </button>
 
             {/* Login Button */}
-            <button className="bg-[#EB5757] hover:bg-red-600 text-white px-6 py-2 rounded-4xl font-medium transition-colors">
-              Login
+            <button className="bg-[#EB5757] hover:bg-red-600 text-white px-4 py-3 rounded-4xl font-medium transition-colors flex items-center space-x-2">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <span>Login</span>
             </button>
 
             {/* Mobile Menu Button */}

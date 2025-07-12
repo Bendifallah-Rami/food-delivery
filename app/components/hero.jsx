@@ -61,7 +61,7 @@ export default function Hero() {
           </div>
 
           {/* Right Content - Hero Image with Floating Elements */}
-          <div className="">
+          <div >
                 <Image 
                     src="/6990621_3489262.svg"
                     alt="Food Delivery Hero Image"
@@ -69,8 +69,6 @@ export default function Hero() {
                     height={500}
                     className="max-w-full"
                 />
-                
-              
             </div>
           </div>
         </div>
