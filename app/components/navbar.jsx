@@ -1,14 +1,31 @@
-"use client"
+'use client'
 
 import { useState } from "react"
 import { ChevronDown, Search, ShoppingCart, Menu, X } from "lucide-react"
 import Image from "next/image"
+import Router from 'next/router'
+import { useRouter } from 'next/navigation'
 
 export default function Navbar() {
   const [isServicesOpen, setIsServicesOpen] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+    const router = useRouter()
 
+  const handellogin = () => {
+    router.push('/login')
+  }
+const handlecontact = (e) => {
+    e.preventDefault();
+    // Use smooth scrolling to the footer element
+    const footer = document.getElementById('footer');
+    if (footer) {
+        footer.scrollIntoView({ behavior: 'smooth' });
+    } else {
+        // Fallback if element not found on current page
+        router.push('/#footer');
+    }
+}
   return (
     <nav className="bg-white mt-2 ">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -80,7 +97,7 @@ export default function Navbar() {
               )}
             </div>
 
-            <a href="#" className="text-[#333333] hover:text-gray-900 font-medium transition-colors">
+            <a href="#" className="text-[#333333] hover:text-gray-900 font-medium transition-colors" onClick={handlecontact}>
               Contact
             </a>
           </div>
@@ -101,7 +118,7 @@ export default function Navbar() {
             </button>
 
             {/* Login Button */}
-            <button className="bg-[#EB5757] hover:bg-red-600 text-white px-4 py-3 rounded-4xl font-medium transition-colors flex items-center space-x-2">
+            <button className="bg-[#EB5757] hover:bg-red-600 text-white px-4 py-3 rounded-4xl font-medium transition-colors flex items-center space-x-2" onClick={handellogin}>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                     <circle cx="12" cy="7" r="4"></circle>
