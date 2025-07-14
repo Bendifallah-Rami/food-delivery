@@ -1,10 +1,11 @@
 "use client"
 
 import { useState } from "react"
-import { ChevronLeft, ChevronRight, ArrowRight, Search, Filter } from "lucide-react"
+import { Search, Filter, Plus, Heart, Star } from "lucide-react"
+import Navbar from "../components/navbarnew"
 import { Beef, Pizza, Cake, IceCreamBowlIcon as Bowl, IceCream, Utensils, Coffee } from "lucide-react"
 
-// Sample data structure - replace with your backend data
+// Enhanced menu data with many more items and categories
 const menuData = {
   categories: [
     {
@@ -966,282 +967,275 @@ const menuData = {
   ],
 }
 
-export default function MenuSection() {
-  const [activeCategory, setActiveCategory] = useState(2) // Default to Pizza
-  const [currentPage, setCurrentPage] = useState(0)
+export default function MenuPage() {
+  const [activeCategory, setActiveCategory] = useState(1)
   const [searchTerm, setSearchTerm] = useState("")
   const [showPopularOnly, setShowPopularOnly] = useState(false)
-  const [isSearching, setIsSearching] = useState(false)
-  const itemsPerPage = 2
+  const [cartItems, setCartItems] = useState([])
+  const [favorites, setFavorites] = useState([])
+  const [selectedItem, setSelectedItem] = useState(null)
 
-  // Get current category items with filtering
   const currentCategoryItems = menuData.categories.find((cat) => cat.id === activeCategory)?.items || []
 
-  // Apply search and popular filters
   const filteredItems = currentCategoryItems.filter((item) => {
     const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesPopular = !showPopularOnly || item.popular
     return matchesSearch && matchesPopular
   })
 
-  const totalPages = Math.ceil(filteredItems.length / itemsPerPage)
-  const displayedItems = filteredItems.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
-
-  const handleCategoryChange = (categoryId) => {
-    setActiveCategory(categoryId)
-    setCurrentPage(0)
-    setSearchTerm("")
-    setShowPopularOnly(false)
+  const addToCart = (item) => {
+    setCartItems((prev) => {
+      const existing = prev.find((cartItem) => cartItem.id === item.id)
+      if (existing) {
+        return prev.map((cartItem) =>
+          cartItem.id === item.id ? { ...cartItem, quantity: cartItem.quantity + 1 } : cartItem,
+        )
+      }
+      return [...prev, { ...item, quantity: 1 }]
+    })
   }
 
-  const handlePrevPage = () => {
-    setCurrentPage((prev) => (prev > 0 ? prev - 1 : totalPages - 1))
-  }
-
-  const handleNextPage = () => {
-    setCurrentPage((prev) => (prev < totalPages - 1 ? prev + 1 : 0))
-  }
-
-  const handleOrderNow = (item) => {
-    // Handle order functionality - integrate with your cart/order system
-    console.log("Order item:", item)
-  }
-
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value)
-    setCurrentPage(0)
-    setIsSearching(e.target.value.length > 0)
-  }
-
-  const togglePopularFilter = () => {
-    setShowPopularOnly(!showPopularOnly)
-    setCurrentPage(0)
-  }
-
-  const clearFilters = () => {
-    setSearchTerm("")
-    setShowPopularOnly(false)
-    setCurrentPage(0)
+  const toggleFavorite = (itemId) => {
+    setFavorites((prev) => (prev.includes(itemId) ? prev.filter((id) => id !== itemId) : [...prev, itemId]))
   }
 
   return (
-    <section className="relative py-16 lg:py-5 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <div className="flex justify-between items-end mb-16">
-          <div>
-            <div className="inline-block bg-[#EB5757]/10 text-[#EB5757] px-6 py-2 rounded-full text-sm font-semibold tracking-wider uppercase mb-4">
-              Our Menu
-            </div>
-            <h2 className="text-3xl lg:text-5xl font-bold text-[#333333] leading-tight max-w">
-              Menu That Always <br />
-              Makes You Fall In Love
-            </h2>
-          </div>
-          {/* Navigation Arrows */}
-          <div className="hidden lg:flex space-x-2">
-            <button
-              onClick={handlePrevPage}
-              disabled={totalPages <= 1}
-              className="w-12 h-12 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <ChevronLeft className="w-5 h-5 text-gray-600" />
-            </button>
-            <button
-              onClick={handleNextPage}
-              disabled={totalPages <= 1}
-              className="w-12 h-12 bg-[#EB5757] rounded-full shadow-md flex items-center justify-center hover:bg-[#EB5757]/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <ChevronRight className="w-5 h-5 text-white" />
-            </button>
-          </div>
-        </div>
+    <div className="min-h-screen bg-gray-50">
+      <Navbar cartCount={cartItems.reduce((sum, item) => sum + item.quantity, 0)} currentPage="menu" />
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Enhanced Category Sidebar */}
-          <div className="lg:col-span-1">
-            <div className="space-y-6">
-              {/* Search Bar */}
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                <input
-                  type="text"
-                  placeholder="Search menu items..."
-                  value={searchTerm}
-                  onChange={handleSearchChange}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-full focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors bg-white"
-                />
-              </div>
-
-              {/* Filter Controls */}
-              <div className="flex flex-wrap gap-2">
-                <button
-                  onClick={togglePopularFilter}
-                  className={`flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                    showPopularOnly
-                      ? "bg-[#EB5757] text-white"
-                      : "bg-white text-gray-700 border border-gray-200 hover:bg-gray-50"
-                  }`}
-                >
-                  <Filter className="w-3 h-3" />
-                  <span>Popular</span>
-                </button>
-                {(isSearching || showPopularOnly) && (
-                  <button
-                    onClick={clearFilters}
-                    className="px-4 py-2 rounded-full text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors"
-                  >
-                    Clear
-                  </button>
-                )}
-              </div>
-
-              {/* Category List */}
-              <div className="space-y-3">
-                {menuData.categories.map((category) => {
-                  const IconComponent = category.icon
-                  return (
-                    <button
-                      key={category.id}
-                      onClick={() => handleCategoryChange(category.id)}
-                      className={`w-full flex items-center justify-between px-6 py-4 rounded-2xl text-left transition-all duration-200 ${
-                        activeCategory === category.id
-                          ? "bg-[#EB5757] text-white shadow-lg transform scale-105"
-                          : "bg-white text-gray-700 hover:bg-gray-50 hover:shadow-md"
-                      }`}
-                    >
-                      <div className="flex items-center space-x-4">
-                        <IconComponent className="w-6 h-6" />
-                        <span className="font-medium">{category.name}</span>
-                      </div>
-                      <div className="flex flex-col items-end">
-                        <span
-                          className={`text-xs font-medium ${
-                            activeCategory === category.id ? "text-red-100" : "text-gray-500"
-                          }`}
-                        >
-                          {category.count} items
-                        </span>
-                        {activeCategory === category.id && <div className="w-2 h-2 bg-white rounded-full mt-1"></div>}
-                      </div>
-                    </button>
-                  )
-                })}
-              </div>
-
-              {/* Results Summary */}
-              {(isSearching || showPopularOnly) && (
-                <div className="bg-gray-50 rounded-xl p-4">
-                  <p className="text-sm text-gray-600">
-                    Showing {filteredItems.length} of {currentCategoryItems.length} items
-                    {isSearching && ` for "${searchTerm}"`}
-                    {showPopularOnly && " (Popular only)"}
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Menu Items Grid */}
-          <div className="lg:col-span-3">
-            {displayedItems.length > 0 ? (
-              <>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {displayedItems.map((item) => (
-                    <div
-                      key={item.id}
-                      className="bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:transform hover:scale-105"
-                    >
-                      <div className="relative">
-                        <img
-                          src={item.image || "/placeholder.svg"}
-                          alt={item.name}
-                          className="w-full h-full object-cover"
-                        />
-                        {item.popular && (
-                          <div className="absolute top-4 left-4 bg-[#EB5757] text-white px-3 py-1 rounded-full text-sm font-medium">
-                            Popular
-                          </div>
-                        )}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                        <div className="absolute bottom-4 left-4 right-4 text-white">
-                          <h3 className="text-2xl font-bold mb-2">{item.name}</h3>
-                          <div className="flex items-center justify-between">
-                            <span className="text-2xl font-bold">${item.price}</span>
-                            <button
-                              onClick={() => handleOrderNow(item)}
-                              className="flex items-center space-x-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full hover:bg-white/30 transition-all duration-200 hover:scale-105"
-                            >
-                              <span className="font-medium">Order Now</span>
-                              <ArrowRight className="w-4 h-4" />
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Pagination Info */}
-                {totalPages > 1 && (
-                  <div className="flex justify-center mt-8">
-                    <div className="flex items-center space-x-2 bg-white rounded-full px-4 py-2 shadow-md">
-                      <span className="text-sm text-gray-600">
-                        Page {currentPage + 1} of {totalPages}
-                      </span>
-                      <div className="flex space-x-1">
-                        {[...Array(totalPages)].map((_, index) => (
-                          <button
-                            key={index}
-                            onClick={() => setCurrentPage(index)}
-                            className={`w-2 h-2 rounded-full transition-colors ${
-                              index === currentPage ? "bg-[#EB5757]" : "bg-gray-300"
-                            }`}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </>
-            ) : (
-              <div className="text-center py-16">
-                <div className="text-6xl mb-4">🔍</div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">No items found</h3>
-                <p className="text-gray-600 mb-6">Try adjusting your search or filter criteria</p>
-                <button
-                  onClick={clearFilters}
-                  className="bg-[#EB5757] text-white px-6 py-3 rounded-full hover:bg-[#EB5757]/80 transition-colors"
-                >
-                  Clear all filters
-                </button>
-              </div>
-            )}
-
-            {/* Mobile Navigation */}
-            <div className="lg:hidden flex justify-center space-x-2 mt-8">
+      {/* header page */}
+      <div className=" text-white rounded-2xl">
+        <div className="px-6 py-8 md:px-24 md:py-10">
+          <div className="bg-[#EB5757] flex items-center justify-between max-w-full mx-auto px-5 py-4 rounded-4xl">
+            {/* Left Side - Text Content */}
+            <div className="flex-1 pr-6">
+              <h1 className="text-2xl md:text-3xl font-bold leading-tight mb-3">Fresh, Fast & Delicious</h1>
+              <p className="text-sm md:text-base text-red-100 mb-4 leading-relaxed">
+                Order your favorite meals with ease and get them delivered in no time. Quality ingredients, unbeatable
+                taste.
+              </p>
               <button
-                onClick={handlePrevPage}
-                disabled={totalPages <= 1}
-                className="w-12 h-12 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="bg-white text-red-600 font-medium px-6 py-4 shadow-sm rounded-4xl flex items-center"
+                onClick={() => {
+                  document.querySelector(".max-w-7xl").scrollIntoView({
+                    behavior: "smooth",
+                  })
+                }}
               >
-                <ChevronLeft className="w-5 h-5 text-gray-600" />
+                Explore Menu
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5 ml-2"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                    clipRule="evenodd"
+                  />
+                </svg>
               </button>
-              <button
-                onClick={handleNextPage}
-                disabled={totalPages <= 1}
-                className="w-12 h-12 bg-[#EB5757] rounded-full shadow-md flex items-center justify-center hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <ChevronRight className="w-5 h-5 text-white" />
-              </button>
+            </div>
+            <div className="flex-shrink-0">
+              <img
+                src="/5739256 1.svg"
+                alt="Food delivery illustration"
+                width={200}
+                height={200}
+                className="w-40 h-40 md:w-48 md:h-48 object-contain"
+              />
             </div>
           </div>
         </div>
       </div>
 
-      {/* Decorative Elements */}
-      <div className="absolute top-20 right-8 w-4 h-4 bg-yellow-400 rounded-full"></div>
-      <div className="absolute bottom-20 left-8 w-3 h-3 bg-[#EB5757] rounded-full"></div>
-    </section>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 mt-7">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          {/* Sidebar */}
+          <div className="lg:col-span-1">
+            <div className="bg-white rounded-2xl p-6 shadow-lg sticky top-24">
+              {/* Search */}
+              <div className="relative mb-6">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <input
+                  type="text"
+                  placeholder="Search menu..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-full focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                />
+              </div>
+
+              {/* Filters */}
+              <div className="mb-6">
+                <button
+                  onClick={() => setShowPopularOnly(!showPopularOnly)}
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                    showPopularOnly ? "bg-[#EB5757] text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  }`}
+                >
+                  <Filter className="w-3 h-3" />
+                  <span>Popular Only</span>
+                </button>
+              </div>
+
+              {/* Categories */}
+              <div className="space-y-2">
+                <h3 className="font-semibold text-gray-900 mb-4">Categories</h3>
+                {menuData.categories.map((category) => {
+                  const IconComponent = category.icon
+                  return (
+                    <button
+                      key={category.id}
+                      onClick={() => setActiveCategory(category.id)}
+                      className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-left transition-all ${
+                        activeCategory === category.id
+                          ? "bg-[#EB5757] text-white shadow-lg"
+                          : "bg-gray-50 text-gray-700 hover:bg-gray-100"
+                      }`}
+                    >
+                      <div className="flex items-center space-x-3">
+                        <IconComponent className="w-5 h-5" />
+                        <span className="font-medium">{category.name}</span>
+                      </div>
+                      <span className="text-xs opacity-75">{category.count}</span>
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+          </div>
+
+          {/* Menu Items */}
+          <div className="lg:col-span-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+              {filteredItems.map((item) => (
+                <div
+                  key={item.id}
+                  className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:transform hover:scale-105"
+                >
+                  <div className="relative">
+                    <img src={item.image || "/placeholder.svg"} alt={item.name} className="w-full h-48 object-cover" />
+                    {item.popular && (
+                      <div className="absolute top-3 left-3 bg-[#EB5757] text-white px-2 py-1 rounded-full text-xs font-medium">
+                        Popular
+                      </div>
+                    )}
+                    <button
+                      onClick={() => toggleFavorite(item.id)}
+                      className="absolute top-3 right-3 p-2 bg-white/80 backdrop-blur-sm rounded-full hover:bg-white transition-colors"
+                    >
+                      <Heart
+                        className={`w-4 h-4 ${
+                          favorites.includes(item.id) ? "text-red-500 fill-current" : "text-gray-600"
+                        }`}
+                      />
+                    </button>
+                  </div>
+                  <div className="p-6">
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="text-xl font-bold text-gray-900">{item.name}</h3>
+                      <span className="text-2xl font-bold text-[#EB5757]">${item.price}</span>
+                    </div>
+                    <p className="text-gray-600 text-sm mb-3 line-clamp-2">{item.description}</p>
+                    <div className="flex items-center space-x-4 mb-4">
+                      <div className="flex items-center space-x-1">
+                        <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                        <span className="text-sm font-medium">{item.rating}</span>
+                        <span className="text-sm text-gray-500">({item.reviews})</span>
+                      </div>
+                      <div className="text-sm text-gray-500">{item.calories} cal</div>
+                    </div>
+                    <div className="flex space-x-2">
+                      <button
+                        onClick={() => setSelectedItem(item)}
+                        className="flex-1 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors text-sm font-medium"
+                      >
+                        View Details
+                      </button>
+                      <button
+                        onClick={() => addToCart(item)}
+                        className="flex items-center justify-center bg-[#EB5757] text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors"
+                      >
+                        <Plus className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            {filteredItems.length === 0 && (
+              <div className="text-center py-16">
+                <div className="text-6xl mb-4">🔍</div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">No items found</h3>
+                <p className="text-gray-600">Try adjusting your search or filter criteria</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Item Detail Modal */}
+      {selectedItem && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="relative">
+              <img
+                src={selectedItem.image || "/placeholder.svg"}
+                alt={selectedItem.name}
+                className="w-full h-64 object-cover"
+              />
+              <button
+                onClick={() => setSelectedItem(null)}
+                className="absolute top-4 right-4 bg-white/80 backdrop-blur-sm p-2 rounded-full hover:bg-white transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="p-6">
+              <div className="flex justify-between items-start mb-4">
+                <h2 className="text-3xl font-bold text-gray-900">{selectedItem.name}</h2>
+                <span className="text-3xl font-bold text-[#EB5757]">${selectedItem.price}</span>
+              </div>
+              <p className="text-gray-600 mb-6">{selectedItem.description}</p>
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-2">Rating</h4>
+                  <div className="flex items-center space-x-1">
+                    <Star className="w-5 h-5 text-yellow-400 fill-current" />
+                    <span className="font-medium">{selectedItem.rating}</span>
+                    <span className="text-gray-500">({selectedItem.reviews} reviews)</span>
+                  </div>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-2">Calories</h4>
+                  <span className="text-gray-600">{selectedItem.calories} cal</span>
+                </div>
+              </div>
+              <div className="mb-6">
+                <h4 className="font-semibold text-gray-900 mb-2">Ingredients</h4>
+                <div className="flex flex-wrap gap-2">
+                  {selectedItem.ingredients?.map((ingredient, index) => (
+                    <span key={index} className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">
+                      {ingredient}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <button
+                onClick={() => {
+                  addToCart(selectedItem)
+                  setSelectedItem(null)
+                }}
+                className="w-full bg-[#EB5757] text-white py-3 rounded-lg hover:bg-red-600 transition-colors font-semibold"
+              >
+                Add to Cart - ${selectedItem.price}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   )
 }

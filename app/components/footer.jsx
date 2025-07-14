@@ -1,35 +1,31 @@
+"use client"
 
-'use client'
-import { Star, Instagram, Facebook, Twitter, Send } from "lucide-react"
+import { Instagram, Facebook, Twitter, Send } from "lucide-react"
 import { useState } from "react"
 
 export default function Footer() {
-     const [showComingSoon, setShowComingSoon] = useState(false)
   const [email, setEmail] = useState("")
 
   const handleEmailSubmit = (e) => {
     e.preventDefault()
-    // Handle email submission
     console.log("Email submitted:", email)
     setEmail("")
   }
+
   return (
-    <footer className="bg-white py-16 px-4  border-gray-200">
+    <footer className="bg-white py-8 sm:py-12 mt-6 lg:py-16 px-4 border-t border-gray-200" id="footer">
       <div className="max-w-7xl mx-auto">
-        <div className="grid lg:grid-cols-5 gap-8">
-          {/* Brand Section */}
-          <div className="lg:col-span-1 space-y-4">
-            <div className="flex items-center gap-2">
-              <div className="bg-red-500 text-white px-2 py-1 rounded font-bold text-sm">
-                FUDO
-              </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 lg:gap-8">
+   {/* brand section */}
+          <div className="lg:col-span-1 space-y-4 text-center sm:text-left">
+            <div className="flex items-center justify-center sm:justify-start gap-2">
+              <div className="bg-red-500 text-white px-2 py-1 rounded font-bold text-sm">FUDO</div>
               <span className="font-bold text-xl">Fudo</span>
             </div>
             <p className="text-gray-600 text-sm leading-relaxed">
-              Our job is to filling your tummy with delicious food and with fast
-              and free delivery.
+              Our job is to filling your tummy with delicious food and with fast and free delivery.
             </p>
-            <div className="flex gap-3">
+            <div className="flex gap-3 justify-center sm:justify-start">
               <div className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center">
                 <Instagram className="w-4 h-4 text-white" />
               </div>
@@ -39,30 +35,42 @@ export default function Footer() {
               <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
                 <Twitter className="w-4 h-4 text-gray-600" />
               </div>
+              <button 
+                onClick={() => {
+                  window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                  });
+                }}
+                className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center ml-auto sm:ml-2"
+                aria-label="Go to top"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clipRule="evenodd" />
+                </svg>
+              </button>
             </div>
           </div>
-
-          {/* About */}
-          <div className="space-y-4">
+          <div>
             <h3 className="font-semibold text-gray-900">About</h3>
             <ul className="space-y-3 text-sm text-gray-600">
               <li>
-                <a href="#" className="hover:text-gray-900">
+                <a href="#" className="hover:text-gray-900 transition-colors">
                   About Us
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-gray-900">
+                <a href="#" className="hover:text-gray-900 transition-colors">
                   Features
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-gray-900">
+                <a href="#" className="hover:text-gray-900 transition-colors">
                   News
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-gray-900">
+                <a href="#" className="hover:text-gray-900 transition-colors">
                   Menu
                 </a>
               </li>
@@ -70,26 +78,26 @@ export default function Footer() {
           </div>
 
           {/* Company */}
-          <div className="space-y-4">
+          <div className="space-y-4 text-center sm:text-left">
             <h3 className="font-semibold text-gray-900">Company</h3>
             <ul className="space-y-3 text-sm text-gray-600">
               <li>
-                <a href="#" className="hover:text-gray-900">
+                <a href="#" className="hover:text-gray-900 transition-colors">
                   Why Fudo?
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-gray-900">
+                <a href="#" className="hover:text-gray-900 transition-colors">
                   Partner With Us
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-gray-900">
+                <a href="#" className="hover:text-gray-900 transition-colors">
                   FAQ
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-gray-900">
+                <a href="#" className="hover:text-gray-900 transition-colors">
                   Blog
                 </a>
               </li>
@@ -97,31 +105,31 @@ export default function Footer() {
           </div>
 
           {/* Support */}
-          <div className="space-y-4">
+          <div className="space-y-4 text-center sm:text-left">
             <h3 className="font-semibold text-gray-900">Support</h3>
             <ul className="space-y-3 text-sm text-gray-600">
               <li>
-                <a href="#" className="hover:text-gray-900">
+                <a href="#" className="hover:text-gray-900 transition-colors">
                   Account
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-gray-900">
+                <a href="#" className="hover:text-gray-900 transition-colors">
                   Support Center
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-gray-900">
+                <a href="#" className="hover:text-gray-900 transition-colors">
                   Feedback
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-gray-900">
+                <a href="#" className="hover:text-gray-900 transition-colors">
                   Contact Us
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-gray-900">
+                <a href="#" className="hover:text-gray-900 transition-colors">
                   Accessibility
                 </a>
               </li>
@@ -129,22 +137,22 @@ export default function Footer() {
           </div>
 
           {/* Get in Touch */}
-          <div className="space-y-4">
+          <div className="space-y-4 text-center sm:text-left sm:col-span-2 lg:col-span-1">
             <h3 className="font-semibold text-gray-900">Get in Touch</h3>
             <p className="text-sm text-gray-600">Question or feedback?</p>
             <p className="text-sm text-gray-600">We'd love to hear from you</p>
-            <form onSubmit={handleEmailSubmit} className="flex">
+            <form onSubmit={handleEmailSubmit} className="flex max-w-sm mx-auto sm:mx-0">
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Email Address"
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-l-full text-sm focus:outline-none focus:border-red-500"
+                className="flex-1 px-3 sm:px-4 py-2 border border-gray-300 rounded-l-full text-sm focus:outline-none focus:border-red-500"
                 required
               />
               <button
                 type="submit"
-                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-r-full transition-colors"
+                className="bg-red-500 hover:bg-red-600 text-white px-3 sm:px-4 py-2 rounded-r-full transition-colors"
               >
                 <Send className="w-4 h-4" />
               </button>
@@ -153,5 +161,5 @@ export default function Footer() {
         </div>
       </div>
     </footer>
-  );
+  )
 }
