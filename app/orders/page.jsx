@@ -102,13 +102,13 @@ export default function MyOrdersPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 font-poppins ">
       <Navbar currentPage="orders" />
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">My Orders</h1>
-          <div className="text-sm text-gray-600">
+          <h1 className="text-3xl font-bold text-[#333333]">My Orders</h1>
+          <div className="text-sm text-[#333333]">
             {activeOrders.length} active order{activeOrders.length !== 1 ? "s" : ""}
           </div>
         </div>
@@ -116,8 +116,8 @@ export default function MyOrdersPage() {
         {activeOrders.length === 0 ? (
           <div className="text-center py-16">
             <div className="text-6xl mb-4">📦</div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">No active orders</h2>
-            <p className="text-gray-600 mb-8">You don't have any orders in progress right now.</p>
+            <h2 className="text-2xl font-bold text-[#333333] mb-2">No active orders</h2>
+            <p className="text-[#333333] mb-8">You don't have any orders in progress right now.</p>
             <button className="bg-[#EB5757] text-white px-8 py-3 rounded-lg hover:bg-red-600 transition-colors">
               Order Now
             </button>
@@ -131,7 +131,7 @@ export default function MyOrdersPage() {
                   <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
                     <div>
                       <div className="flex items-center space-x-3 mb-2">
-                        <h2 className="text-xl font-bold text-gray-900">Order #{order.id}</h2>
+                        <h2 className="text-xl font-bold text-[#333333]">Order #{order.id}</h2>
                         <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(order.status)}`}>
                           {getStatusIcon(order.status)}
                           <span className="ml-1 capitalize">{order.status.replace("_", " ")}</span>
@@ -142,7 +142,7 @@ export default function MyOrdersPage() {
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm text-gray-600">Estimated delivery</p>
+                      <p className="text-sm text-[#333333]">Estimated delivery</p>
                       <p className="text-lg font-bold text-[#EB5757]">{formatTime(order.estimatedDelivery)}</p>
                     </div>
                   </div>
@@ -151,15 +151,15 @@ export default function MyOrdersPage() {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6">
                   {/* Order Items */}
                   <div className="lg:col-span-1">
-                    <h3 className="font-bold text-gray-900 mb-4">Order Items</h3>
+                    <h3 className="font-bold text-[#333333] mb-4">Order Items</h3>
                     <div className="space-y-3">
                       {order.items.map((item, index) => (
                         <div key={index} className="flex justify-between items-center">
                           <div>
-                            <p className="font-medium text-gray-900">{item.name}</p>
-                            <p className="text-sm text-gray-600">Qty: {item.quantity}</p>
+                            <p className="font-medium text-[#333333]">{item.name}</p>
+                            <p className="text-sm text-[#333333]">Qty: {item.quantity}</p>
                           </div>
-                          <p className="font-medium text-gray-900">${(item.price * item.quantity).toFixed(2)}</p>
+                          <p className="font-medium text-[#333333]">${(item.price * item.quantity).toFixed(2)}</p>
                         </div>
                       ))}
                     </div>
@@ -167,7 +167,7 @@ export default function MyOrdersPage() {
 
                   {/* Order Timeline */}
                   <div className="lg:col-span-1">
-                    <h3 className="font-bold text-gray-900 mb-4">Order Progress</h3>
+                    <h3 className="font-bold text-[#333333] mb-4">Order Progress</h3>
                     <div className="space-y-4">
                       {order.timeline.map((step, index) => (
                         <div key={index} className="flex items-center space-x-3">
@@ -196,21 +196,21 @@ export default function MyOrdersPage() {
                       <div className="flex items-start space-x-3">
                         <MapPin className="w-5 h-5 text-gray-400 mt-0.5" />
                         <div>
-                          <p className="font-medium text-gray-900">Delivery Address</p>
-                          <p className="text-sm text-gray-600">{order.deliveryAddress}</p>
+                          <p className="font-medium text-[#333333]">Delivery Address</p>
+                          <p className="text-sm text-[#333333]">{order.deliveryAddress}</p>
                         </div>
                       </div>
 
                       {order.driver && (
                         <div className="bg-gray-50 rounded-lg p-4">
                           <div className="flex items-center justify-between mb-2">
-                            <p className="font-medium text-gray-900">Your Driver</p>
+                            <p className="font-medium text-[#333333]">Your Driver</p>
                             <div className="flex items-center space-x-1">
                               <Star className="w-4 h-4 text-yellow-400 fill-current" />
                               <span className="text-sm font-medium">{order.driver.rating}</span>
                             </div>
                           </div>
-                          <p className="text-gray-900 font-medium">{order.driver.name}</p>
+                          <p className="text-[#333333] font-medium">{order.driver.name}</p>
                           <p className="text-sm text-gray-600">{order.driver.vehicle}</p>
                           <div className="flex space-x-2 mt-3">
                             <button className="flex-1 bg-[#EB5757] text-white py-2 px-3 rounded-lg text-sm hover:bg-red-600 transition-colors flex items-center justify-center space-x-1">

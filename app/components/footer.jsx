@@ -16,7 +16,7 @@ export default function Footer() {
     <footer className="bg-white py-8 sm:py-12 mt-6 lg:py-16 px-4 border-t border-gray-200" id="footer">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 lg:gap-8">
-          {/* Brand Section */}
+   {/* brand section */}
           <div className="lg:col-span-1 space-y-4 text-center sm:text-left">
             <div className="flex items-center justify-center sm:justify-start gap-2">
               <div className="bg-red-500 text-white px-2 py-1 rounded font-bold text-sm">FUDO</div>
@@ -35,11 +35,23 @@ export default function Footer() {
               <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
                 <Twitter className="w-4 h-4 text-gray-600" />
               </div>
+              <button 
+                onClick={() => {
+                  window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                  });
+                }}
+                className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center ml-auto sm:ml-2"
+                aria-label="Go to top"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clipRule="evenodd" />
+                </svg>
+              </button>
             </div>
           </div>
-
-          {/* About */}
-          <div className="space-y-4 text-center sm:text-left">
+          <div>
             <h3 className="font-semibold text-gray-900">About</h3>
             <ul className="space-y-3 text-sm text-gray-600">
               <li>

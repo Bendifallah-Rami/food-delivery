@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { Search, Filter, Plus, Heart, Star } from "lucide-react"
 import Navbar from "../components/navbarnew"
+import { Beef, Pizza, Cake, IceCreamBowlIcon as Bowl, IceCream, Utensils, Coffee } from "lucide-react"
 
 // Enhanced menu data with many more items and categories
 const menuData = {
@@ -10,7 +11,7 @@ const menuData = {
     {
       id: 1,
       name: "Burger",
-      icon: "🍔",
+      icon: Beef,
       count: 12,
       items: [
         {
@@ -162,7 +163,7 @@ const menuData = {
     {
       id: 2,
       name: "Pizza",
-      icon: "🍕",
+      icon: Pizza,
       count: 15,
       items: [
         {
@@ -350,7 +351,7 @@ const menuData = {
     {
       id: 3,
       name: "Cupcake",
-      icon: "🧁",
+      icon: Cake,
       count: 10,
       items: [
         {
@@ -478,7 +479,7 @@ const menuData = {
     {
       id: 4,
       name: "Ramen",
-      icon: "🍜",
+      icon: Bowl,
       count: 8,
       items: [
         {
@@ -582,7 +583,7 @@ const menuData = {
     {
       id: 5,
       name: "Ice Cream",
-      icon: "🍦",
+      icon: IceCream,
       count: 8,
       items: [
         {
@@ -686,7 +687,7 @@ const menuData = {
     {
       id: 6,
       name: "Sides",
-      icon: "🍟",
+      icon: Utensils,
       count: 10,
       items: [
         {
@@ -814,7 +815,7 @@ const menuData = {
     {
       id: 7,
       name: "Drinks",
-      icon: "🥤",
+      icon: Coffee,
       count: 12,
       items: [
         {
@@ -1002,71 +1003,54 @@ export default function MenuPage() {
     <div className="min-h-screen bg-gray-50">
       <Navbar cartCount={cartItems.reduce((sum, item) => sum + item.quantity, 0)} currentPage="menu" />
 
-      {/* Hero Section */}
-      <div className="relative bg-gradient-to-r from-[#EB5757] to-red-600 text-white py-16 overflow-hidden">
-        <div className="absolute inset-0 bg-black/10"></div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="text-5xl lg:text-7xl font-bold mb-6">Delicious Food Menu</h1>
-            <p className="text-xl lg:text-2xl mb-8 text-red-100">
-              Discover amazing dishes made with fresh ingredients and love
-            </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-8">
-              <div className="flex items-center space-x-2">
-                <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
-                  <span className="text-2xl">🍔</span>
-                </div>
-                <span className="text-lg">150+ Menu Items</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
-                  <span className="text-2xl">⭐</span>
-                </div>
-                <span className="text-lg">4.8 Average Rating</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
-                  <span className="text-2xl">🚚</span>
-                </div>
-                <span className="text-lg">Fast Delivery</span>
-              </div>
+      {/* header page */}
+      <div className=" text-white rounded-2xl">
+        <div className="px-6 py-8 md:px-24 md:py-10">
+          <div className="bg-[#EB5757] flex items-center justify-between max-w-full mx-auto px-5 py-4 rounded-4xl">
+            {/* Left Side - Text Content */}
+            <div className="flex-1 pr-6">
+              <h1 className="text-2xl md:text-3xl font-bold leading-tight mb-3">Fresh, Fast & Delicious</h1>
+              <p className="text-sm md:text-base text-red-100 mb-4 leading-relaxed">
+                Order your favorite meals with ease and get them delivered in no time. Quality ingredients, unbeatable
+                taste.
+              </p>
+              <button
+                className="bg-white text-red-600 font-medium px-6 py-4 shadow-sm rounded-4xl flex items-center"
+                onClick={() => {
+                  document.querySelector(".max-w-7xl").scrollIntoView({
+                    behavior: "smooth",
+                  })
+                }}
+              >
+                Explore Menu
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5 ml-2"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </button>
+            </div>
+            <div className="flex-shrink-0">
+              <img
+                src="/5739256 1.svg"
+                alt="Food delivery illustration"
+                width={200}
+                height={200}
+                className="w-40 h-40 md:w-48 md:h-48 object-contain"
+              />
             </div>
           </div>
         </div>
-
-        {/* Decorative elements */}
-        <div className="absolute top-10 left-10 w-20 h-20 bg-white/10 rounded-full"></div>
-        <div className="absolute bottom-10 right-10 w-16 h-16 bg-white/10 rounded-full"></div>
-        <div className="absolute top-1/2 right-20 w-8 h-8 bg-white/20 rounded-full"></div>
       </div>
 
-      {/* Featured Categories */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">Popular Categories</h2>
-          <p className="text-xl text-gray-600">Explore our most loved food categories</p>
-        </div>
-
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 mb-12">
-          {menuData.categories.map((category) => (
-            <button
-              key={category.id}
-              onClick={() => setActiveCategory(category.id)}
-              className={`p-6 rounded-2xl text-center transition-all duration-300 hover:transform hover:scale-105 ${
-                activeCategory === category.id
-                  ? "bg-[#EB5757] text-white shadow-xl"
-                  : "bg-white text-gray-700 hover:bg-gray-50 shadow-lg"
-              }`}
-            >
-              <div className="text-4xl mb-3">{category.icon}</div>
-              <h3 className="font-bold text-sm">{category.name}</h3>
-              <p className="text-xs opacity-75 mt-1">{category.count} items</p>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 mt-7">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Sidebar */}
           <div className="lg:col-span-1">
@@ -1099,23 +1083,26 @@ export default function MenuPage() {
               {/* Categories */}
               <div className="space-y-2">
                 <h3 className="font-semibold text-gray-900 mb-4">Categories</h3>
-                {menuData.categories.map((category) => (
-                  <button
-                    key={category.id}
-                    onClick={() => setActiveCategory(category.id)}
-                    className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-left transition-all ${
-                      activeCategory === category.id
-                        ? "bg-[#EB5757] text-white shadow-lg"
-                        : "bg-gray-50 text-gray-700 hover:bg-gray-100"
-                    }`}
-                  >
-                    <div className="flex items-center space-x-3">
-                      <span className="text-xl">{category.icon}</span>
-                      <span className="font-medium">{category.name}</span>
-                    </div>
-                    <span className="text-xs opacity-75">{category.count}</span>
-                  </button>
-                ))}
+                {menuData.categories.map((category) => {
+                  const IconComponent = category.icon
+                  return (
+                    <button
+                      key={category.id}
+                      onClick={() => setActiveCategory(category.id)}
+                      className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-left transition-all ${
+                        activeCategory === category.id
+                          ? "bg-[#EB5757] text-white shadow-lg"
+                          : "bg-gray-50 text-gray-700 hover:bg-gray-100"
+                      }`}
+                    >
+                      <div className="flex items-center space-x-3">
+                        <IconComponent className="w-5 h-5" />
+                        <span className="font-medium">{category.name}</span>
+                      </div>
+                      <span className="text-xs opacity-75">{category.count}</span>
+                    </button>
+                  )
+                })}
               </div>
             </div>
           </div>
@@ -1146,15 +1133,12 @@ export default function MenuPage() {
                       />
                     </button>
                   </div>
-
                   <div className="p-6">
                     <div className="flex items-center justify-between mb-2">
                       <h3 className="text-xl font-bold text-gray-900">{item.name}</h3>
                       <span className="text-2xl font-bold text-[#EB5757]">${item.price}</span>
                     </div>
-
                     <p className="text-gray-600 text-sm mb-3 line-clamp-2">{item.description}</p>
-
                     <div className="flex items-center space-x-4 mb-4">
                       <div className="flex items-center space-x-1">
                         <Star className="w-4 h-4 text-yellow-400 fill-current" />
@@ -1163,7 +1147,6 @@ export default function MenuPage() {
                       </div>
                       <div className="text-sm text-gray-500">{item.calories} cal</div>
                     </div>
-
                     <div className="flex space-x-2">
                       <button
                         onClick={() => setSelectedItem(item)}
@@ -1182,7 +1165,6 @@ export default function MenuPage() {
                 </div>
               ))}
             </div>
-
             {filteredItems.length === 0 && (
               <div className="text-center py-16">
                 <div className="text-6xl mb-4">🔍</div>
@@ -1211,15 +1193,12 @@ export default function MenuPage() {
                 ✕
               </button>
             </div>
-
             <div className="p-6">
               <div className="flex justify-between items-start mb-4">
                 <h2 className="text-3xl font-bold text-gray-900">{selectedItem.name}</h2>
                 <span className="text-3xl font-bold text-[#EB5757]">${selectedItem.price}</span>
               </div>
-
               <p className="text-gray-600 mb-6">{selectedItem.description}</p>
-
               <div className="grid grid-cols-2 gap-4 mb-6">
                 <div>
                   <h4 className="font-semibold text-gray-900 mb-2">Rating</h4>
@@ -1234,7 +1213,6 @@ export default function MenuPage() {
                   <span className="text-gray-600">{selectedItem.calories} cal</span>
                 </div>
               </div>
-
               <div className="mb-6">
                 <h4 className="font-semibold text-gray-900 mb-2">Ingredients</h4>
                 <div className="flex flex-wrap gap-2">
@@ -1245,7 +1223,6 @@ export default function MenuPage() {
                   ))}
                 </div>
               </div>
-
               <button
                 onClick={() => {
                   addToCart(selectedItem)
