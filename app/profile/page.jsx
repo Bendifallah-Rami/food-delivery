@@ -1,7 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import { Camera, Edit, MapPin, Phone, Mail, Calendar, Award, Heart, Clock } from "lucide-react"
+import { Camera, Edit, MapPin, Phone, Mail, Calendar, Award, Heart, Clock, Star, ArrowRight } from "lucide-react"
+import Image from "next/image"
 import Navbar from "../components/navbarnew"
 
 export default function ProfilePage() {
@@ -31,7 +32,6 @@ export default function ProfilePage() {
 
   const handleSave = () => {
     setIsEditing(false)
-    // Here you would typically save to backend
     console.log("Saving profile data:", profileData)
   }
 
@@ -43,170 +43,224 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white overflow-hidden font-poppins">
       <Navbar currentPage="profile" />
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="bg-white rounded-2xl shadow-lg overflow-hidden mb-8">
-          <div className="bg-gradient-to-r from-[#EB5757] to-red-600 h-32"></div>
-          <div className="relative px-6 pb-6">
-            <div className="flex flex-col sm:flex-row items-center sm:items-end space-y-4 sm:space-y-0 sm:space-x-6 -mt-16">
-              <div className="relative">
-                <img
-                  src={profileData.profileImage || "/placeholder.svg"}
-                  alt="Profile"
-                  className="w-32 h-32 rounded-full border-4 border-white shadow-lg object-cover"
-                />
-                <button className="absolute bottom-2 right-2 bg-[#EB5757] text-white p-2 rounded-full hover:bg-red-600 transition-colors">
-                  <Camera className="w-4 h-4" />
+      {/* Hero-style Header Section */}
+      <section className="overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="relative flex flex-col lg:flex-row items-center justify-between min-h-[500px] py-12 lg:py-5">
+            {/* Left Content */}
+            <div className="flex-1 lg:pr-12 z-10">
+              {/* Badge */}
+              <div className="inline-flex items-center bg-[#FEE9DE] text-[#EB5757] px-5 py-3 rounded-full text-sm font-medium mb-5">
+                <span>Profile Dashboard</span>
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </div>
+
+              {/* Main Heading */}
+              <h1 className="text-4xl lg:text-6xl font-bold text-[#333333] leading-tight mb-6">
+                Welcome Back
+                <br />
+                <span className="text-[#EB5757]">{profileData.firstName}</span>
+              </h1>
+
+              {/* Description */}
+              <p className="text-lg text-[#333333] font-medium mb-8 max-w-md">
+                Manage your profile, track your orders, and enjoy delicious food with fast delivery
+              </p>
+
+              {/* CTA Button */}
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-6">
+                <button
+                  onClick={() => (isEditing ? handleSave() : setIsEditing(true))}
+                  className="bg-[#EB5757] hover:bg-red-600 text-white px-8 py-4 rounded-full font-semibold transition-colors flex items-center gap-2"
+                >
+                  <Edit className="w-5 h-5" />
+                  {isEditing ? "Save Changes" : "Edit Profile"}
                 </button>
               </div>
 
-              <div className="flex-1 text-center sm:text-left">
-                <h1 className="text-3xl font-bold text-gray-900">
-                  {profileData.firstName} {profileData.lastName}
-                </h1>
-                <p className="text-gray-600 mt-1">Food Enthusiast</p>
-                <div className="flex items-center justify-center sm:justify-start space-x-4 mt-3 text-sm text-gray-500">
-                  <div className="flex items-center space-x-1">
-                    <Calendar className="w-4 h-4" />
-                    <span>Member since {orderStats.memberSince}</span>
+              {/* Stats Preview */}
+              <div className="flex items-center">
+                <div className="flex -space-x-2 mr-4">
+                  <div className="w-12 h-12 bg-gradient-to-r from-[#EB5757] to-red-600 rounded-full border-2 border-white flex items-center justify-center">
+                    <Clock className="w-6 h-6 text-white" />
                   </div>
-                  <div className="flex items-center space-x-1">
-                    <Award className="w-4 h-4" />
-                    <span>{orderStats.totalOrders} orders</span>
+                  <div className="w-12 h-12 bg-gradient-to-r from-orange-400 to-red-400 rounded-full border-2 border-white flex items-center justify-center">
+                    <Heart className="w-6 h-6 text-white" />
+                  </div>
+                  <div className="w-12 h-12 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full border-2 border-white flex items-center justify-center">
+                    <Award className="w-6 h-6 text-white" />
+                  </div>
+                </div>
+                <div>
+                  <p className="font-semibold text-gray-900">{orderStats.totalOrders} Orders Completed</p>
+                  <div className="flex items-center">
+                    <Star className="w-4 h-4 text-yellow-400 fill-current" />
+                    <span className="text-sm text-gray-600 ml-1">Member since {orderStats.memberSince}</span>
                   </div>
                 </div>
               </div>
+            </div>
 
-              <button
-                onClick={() => (isEditing ? handleSave() : setIsEditing(true))}
-                className="bg-[#EB5757] text-white px-6 py-2 rounded-lg hover:bg-red-600 transition-colors flex items-center space-x-2"
-              >
-                <Edit className="w-4 h-4" />
-                <span>{isEditing ? "Save Changes" : "Edit Profile"}</span>
-              </button>
+            {/* Right Content - Profile Image */}
+            <div className="relative">
+              <div className="relative w-96 h-96">
+                <div className="absolute inset-0 bg-gradient-to-br from-[#FEE9DE] to-[#EB5757]/20 rounded-full"></div>
+                <div className="absolute inset-8 bg-white rounded-full shadow-2xl flex items-center justify-center">
+                  <div className="relative">
+                    <img
+                      src={profileData.profileImage || "/placeholder.svg"}
+                      alt="Profile"
+                      className="w-64 h-64 rounded-full object-cover"
+                    />
+                    <button className="absolute bottom-4 right-4 bg-[#EB5757] text-white p-3 rounded-full hover:bg-red-600 transition-colors shadow-lg">
+                      <Camera className="w-6 h-6" />
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
+      </section>
 
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Personal Information */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Personal Information</h2>
+            <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-8 mb-8">
+              <div className="flex items-center mb-6">
+                <div className="w-2 h-8 bg-[#EB5757] rounded-full mr-4"></div>
+                <h2 className="text-3xl font-bold text-[#333333]">Personal Information</h2>
+              </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">First Name</label>
+                  <label className="block text-sm font-semibold text-[#333333] mb-3">First Name</label>
                   {isEditing ? (
                     <input
                       type="text"
                       value={profileData.firstName}
                       onChange={(e) => handleInputChange("firstName", e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-[#EB5757] focus:border-[#EB5757] transition-colors"
                     />
                   ) : (
-                    <p className="text-gray-900">{profileData.firstName}</p>
+                    <p className="text-[#333333] font-medium bg-gray-50 px-4 py-3 rounded-xl">{profileData.firstName}</p>
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
+                  <label className="block text-sm font-semibold text-[#333333] mb-3">Last Name</label>
                   {isEditing ? (
                     <input
                       type="text"
                       value={profileData.lastName}
                       onChange={(e) => handleInputChange("lastName", e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-[#EB5757] focus:border-[#EB5757] transition-colors"
                     />
                   ) : (
-                    <p className="text-gray-900">{profileData.lastName}</p>
+                    <p className="text-[#333333] font-medium bg-gray-50 px-4 py-3 rounded-xl">{profileData.lastName}</p>
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                  <div className="flex items-center space-x-2">
-                    <Mail className="w-4 h-4 text-gray-400" />
+                  <label className="block text-sm font-semibold text-[#333333] mb-3">Email</label>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-[#FEE9DE] rounded-full flex items-center justify-center">
+                      <Mail className="w-5 h-5 text-[#EB5757]" />
+                    </div>
                     {isEditing ? (
                       <input
                         type="email"
                         value={profileData.email}
                         onChange={(e) => handleInputChange("email", e.target.value)}
-                        className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                        className="flex-1 px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-[#EB5757] focus:border-[#EB5757] transition-colors"
                       />
                     ) : (
-                      <p className="text-gray-900">{profileData.email}</p>
+                      <p className="text-[#333333] font-medium bg-gray-50 px-4 py-3 rounded-xl flex-1">{profileData.email}</p>
                     )}
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Phone</label>
-                  <div className="flex items-center space-x-2">
-                    <Phone className="w-4 h-4 text-gray-400" />
+                  <label className="block text-sm font-semibold text-[#333333] mb-3">Phone</label>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-[#FEE9DE] rounded-full flex items-center justify-center">
+                      <Phone className="w-5 h-5 text-[#EB5757]" />
+                    </div>
                     {isEditing ? (
                       <input
                         type="tel"
                         value={profileData.phone}
                         onChange={(e) => handleInputChange("phone", e.target.value)}
-                        className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                        className="flex-1 px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-[#EB5757] focus:border-[#EB5757] transition-colors"
                       />
                     ) : (
-                      <p className="text-gray-900">{profileData.phone}</p>
+                      <p className="text-[#333333] font-medium bg-gray-50 px-4 py-3 rounded-xl flex-1">{profileData.phone}</p>
                     )}
                   </div>
                 </div>
 
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Address</label>
-                  <div className="flex items-center space-x-2">
-                    <MapPin className="w-4 h-4 text-gray-400" />
+                  <label className="block text-sm font-semibold text-[#333333] mb-3">Address</label>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-[#FEE9DE] rounded-full flex items-center justify-center">
+                      <MapPin className="w-5 h-5 text-[#EB5757]" />
+                    </div>
                     {isEditing ? (
                       <input
                         type="text"
                         value={profileData.address}
                         onChange={(e) => handleInputChange("address", e.target.value)}
-                        className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                        className="flex-1 px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-[#EB5757] focus:border-[#EB5757] transition-colors"
                       />
                     ) : (
-                      <p className="text-gray-900">{profileData.address}</p>
+                      <p className="text-[#333333] font-medium bg-gray-50 px-4 py-3 rounded-xl flex-1">{profileData.address}</p>
                     )}
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Date of Birth</label>
+                  <label className="block text-sm font-semibold text-[#333333] mb-3">Date of Birth</label>
                   {isEditing ? (
                     <input
                       type="date"
                       value={profileData.dateOfBirth}
                       onChange={(e) => handleInputChange("dateOfBirth", e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-[#EB5757] focus:border-[#EB5757] transition-colors"
                     />
                   ) : (
-                    <p className="text-gray-900">{new Date(profileData.dateOfBirth).toLocaleDateString()}</p>
+                    <p className="text-[#333333] font-medium bg-gray-50 px-4 py-3 rounded-xl">{new Date(profileData.dateOfBirth).toLocaleDateString()}</p>
                   )}
                 </div>
               </div>
             </div>
 
             {/* Recent Orders */}
-            <div className="bg-white rounded-2xl shadow-lg p-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Recent Orders</h2>
+            <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-8">
+              <div className="flex items-center mb-6">
+                <div className="w-2 h-8 bg-[#EB5757] rounded-full mr-4"></div>
+                <h2 className="text-3xl font-bold text-[#333333]">Recent Orders</h2>
+              </div>
 
               <div className="space-y-4">
                 {recentOrders.map((order) => (
-                  <div key={order.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                    <div>
-                      <p className="font-medium text-gray-900">{order.items}</p>
-                      <p className="text-sm text-gray-500">{order.date}</p>
+                  <div key={order.id} className="flex items-center justify-between p-6 bg-gradient-to-r from-gray-50 to-[#FEE9DE]/30 rounded-2xl border border-gray-100 hover:shadow-md transition-shadow">
+                    <div className="flex items-center space-x-4">
+                      <div className="w-12 h-12 bg-[#EB5757] rounded-full flex items-center justify-center">
+                        <Clock className="w-6 h-6 text-white" />
+                      </div>
+                      <div>
+                        <p className="font-semibold text-[#333333]">{order.items}</p>
+                        <p className="text-sm text-gray-600">{order.date}</p>
+                      </div>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold text-gray-900">${order.total}</p>
-                      <span className="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
+                      <p className="font-bold text-[#333333] text-lg">${order.total}</p>
+                      <span className="inline-block bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full font-medium">
                         {order.status}
                       </span>
                     </div>
@@ -219,48 +273,63 @@ export default function ProfilePage() {
           {/* Stats Sidebar */}
           <div className="space-y-6">
             {/* Order Stats */}
-            <div className="bg-white rounded-2xl shadow-lg p-6">
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Order Statistics</h3>
+            <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-6">
+              <div className="flex items-center mb-6">
+                <div className="w-2 h-6 bg-[#EB5757] rounded-full mr-3"></div>
+                <h3 className="text-2xl font-bold text-[#333333]">Statistics</h3>
+              </div>
 
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <Clock className="w-5 h-5 text-[#EB5757]" />
-                    <span className="text-gray-600">Total Orders</span>
+              <div className="space-y-6">
+                <div className="flex items-center justify-between p-4 bg-gradient-to-r from-[#FEE9DE] to-[#EB5757]/10 rounded-xl">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-[#EB5757] rounded-full flex items-center justify-center">
+                      <Clock className="w-5 h-5 text-white" />
+                    </div>
+                    <span className="text-[#333333] font-medium">Total Orders</span>
                   </div>
-                  <span className="font-bold text-gray-900">{orderStats.totalOrders}</span>
+                  <span className="font-bold text-[#333333] text-xl">{orderStats.totalOrders}</span>
                 </div>
 
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <Heart className="w-5 h-5 text-[#EB5757]" />
-                    <span className="text-gray-600">Favorite Items</span>
+                <div className="flex items-center justify-between p-4 bg-gradient-to-r from-[#FEE9DE] to-[#EB5757]/10 rounded-xl">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-[#EB5757] rounded-full flex items-center justify-center">
+                      <Heart className="w-5 h-5 text-white" />
+                    </div>
+                    <span className="text-[#333333] font-medium">Favorite Items</span>
                   </div>
-                  <span className="font-bold text-gray-900">{orderStats.favoriteItems}</span>
+                  <span className="font-bold text-[#333333] text-xl">{orderStats.favoriteItems}</span>
                 </div>
 
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <Award className="w-5 h-5 text-[#EB5757]" />
-                    <span className="text-gray-600">Total Spent</span>
+                <div className="flex items-center justify-between p-4 bg-gradient-to-r from-[#FEE9DE] to-[#EB5757]/10 rounded-xl">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-[#EB5757] rounded-full flex items-center justify-center">
+                      <Award className="w-5 h-5 text-white" />
+                    </div>
+                    <span className="text-[#333333] font-medium">Total Spent</span>
                   </div>
-                  <span className="font-bold text-gray-900">${orderStats.totalSpent}</span>
+                  <span className="font-bold text-[#333333] text-xl">${orderStats.totalSpent}</span>
                 </div>
               </div>
             </div>
 
             {/* Loyalty Program */}
-            <div className="bg-gradient-to-br from-[#EB5757] to-red-600 rounded-2xl shadow-lg p-6 text-white">
-              <h3 className="text-xl font-bold mb-4">Loyalty Program</h3>
-              <div className="space-y-3">
-                <div className="flex justify-between">
-                  <span>Current Points</span>
-                  <span className="font-bold">1,247</span>
+            <div className="bg-gradient-to-br from-[#EB5757] to-red-600 rounded-3xl shadow-xl p-6 text-white">
+              <div className="flex items-center mb-6">
+                <div className="w-2 h-6 bg-white rounded-full mr-3"></div>
+                <h3 className="text-2xl font-bold">Loyalty Program</h3>
+              </div>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <span className="font-medium">Current Points</span>
+                  <span className="font-bold text-2xl">1,247</span>
                 </div>
-                <div className="w-full bg-white/20 rounded-full h-2">
-                  <div className="bg-white h-2 rounded-full" style={{ width: "65%" }}></div>
+                <div className="w-full bg-white/20 rounded-full h-3">
+                  <div className="bg-white h-3 rounded-full transition-all duration-300" style={{ width: "65%" }}></div>
                 </div>
-                <p className="text-sm opacity-90">353 points until next reward!</p>
+                <p className="text-sm opacity-90 font-medium">353 points until next reward!</p>
+                <button className="w-full bg-white text-[#EB5757] py-3 rounded-full font-semibold hover:bg-gray-100 transition-colors">
+                  View Rewards
+                </button>
               </div>
             </div>
           </div>

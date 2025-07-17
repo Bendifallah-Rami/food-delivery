@@ -218,7 +218,7 @@ export default function LocationConfirm() {
             </div>
 
             {/* Estimated Delivery */}
-            <div className="bg-gradient-to-br from-[#EB5757] to-red-600 rounded-2xl shadow-lg p-6 text-white">
+            <div className="bg-[#EB5757] rounded-2xl shadow-lg p-6 text-white">
               <h3 className="text-lg font-bold mb-4">Estimated Delivery</h3>
               <div className="space-y-2">
                 <p className="text-2xl font-bold">25-35 min</p>

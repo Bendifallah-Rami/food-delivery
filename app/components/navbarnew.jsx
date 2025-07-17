@@ -108,7 +108,7 @@ export default function Navbar({ cartCount = 2, currentPage = "menu" }) {
                     <p className="text-sm font-semibold text-gray-900">John Doe</p>
                     <p className="text-xs text-gray-500">john.doe@example.com</p>
                   </div>
-                  {["Profile", "Settings", "Order History"].map((item) => (
+                  {["Profile", "Settings", "History"].map((item) => (
                     <Link
                       key={item}
                       href={`/${item.toLowerCase().replace(" ", "-")}`}
