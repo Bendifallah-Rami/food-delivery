@@ -37,7 +37,7 @@ export default function OrdersList() {
     {
       id: 2,
       orderNumber: "ORD-2024-002",
-      customer: "Jane Smith",
+      customer: "rami bendifallah",
       customerPhone: "+1234567891",
       items: ["Margherita Pizza", "Garlic Bread"],
       totalAmount: 32.50,
