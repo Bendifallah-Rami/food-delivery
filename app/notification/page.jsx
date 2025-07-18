@@ -207,7 +207,7 @@ export default function NotificationPage() {
         {/* Load More */}
         {notifications.length > 0 && (
           <div className="text-center mt-12">
-            <button className="text-[#EB5757] hover:text-red-600 font-semibold px-6 py-3 rounded-full border-2 border-[#EB5757] hover:bg-[#EB5757] hover:text-white transition-all">
+            <button className="text-[#EB5757] hover:text-red-600 font-semibold px-6 py-3 rounded-full border-2 border-[#EB5757] hover:bg-[#EB5757]  transition-all">
               Load More Notifications
             </button>
           </div>
