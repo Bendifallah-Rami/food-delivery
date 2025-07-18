@@ -1,18 +1,20 @@
 "use client"
 
 import { useState, useCallback, useRef } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter, useParams } from "next/navigation"
 import Head from "next/head"
-import Sidebar from "../../../components/dashboard/sidebar"
-import Toast from "../../../components/form_components/toast"
-import FormField from "../../../components/form_components/form_field"
-import DropdownField from "../../../components/form_components/dropdown_field"
-import FormSection from "../../../components/form_components/form_section"
-import PhotoUpload from "../../../components/form_components/photoupload_field"
+import Sidebar from "../../../../components/dashboard/sidebar"
+import Toast from "../../../../components/form_components/toast"
+import FormField from "../../../../components/form_components/form_field"
+import DropdownField from "../../../../components/form_components/dropdown_field"
+import FormSection from "../../../../components/form_components/form_section"
+import PhotoUpload from "../../../../components/form_components/photoupload_field"
 import { User, Mail, Phone, MapPin, DollarSign, Calendar, Save, ArrowLeft } from "lucide-react"
 
-export default function StaffAddForm() {
+export default function StaffEditForm() {
   const router = useRouter()
+  const params = useParams()
+  const staffId = params.id
   const fileInputRef = useRef(null)
 
   // State for toast notifications
@@ -22,29 +24,29 @@ export default function StaffAddForm() {
     type: "success",
   })
 
-  // Form state for staff
+  // Form state for staff - with default values for editing
   const [staff, setStaff] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    address: "",
-    city: "",
-    state: "",
-    zipCode: "",
-    position: "",
-    department: "",
-    status: "Active",
-    shift: "Morning",
-    hireDate: "",
-    salary: "",
-    manager: "",
-    emergencyContact: "",
-    emergencyPhone: "",
-    notes: "",
-    employeeId: "",
-    socialSecurity: "",
-    dateOfBirth: "",
-    gender: "",
+    name: staffId === '1' ? "Alex Johnson" : staffId === '2' ? "Sarah Wilson" : staffId === '3' ? "Mike Davis" : "Emily Brown",
+    email: staffId === '1' ? "alex.johnson@restaurant.com" : staffId === '2' ? "sarah.wilson@restaurant.com" : staffId === '3' ? "mike.davis@restaurant.com" : "emily.brown@restaurant.com",
+    phone: staffId === '1' ? "+1234567890" : staffId === '2' ? "+1234567891" : staffId === '3' ? "+1234567892" : "+1234567893",
+    address: staffId === '1' ? "123 Main St" : staffId === '2' ? "456 Oak Ave" : staffId === '3' ? "789 Pine Rd" : "321 Elm St",
+    city: staffId === '1' ? "New York" : staffId === '2' ? "Los Angeles" : staffId === '3' ? "Chicago" : "Miami",
+    state: staffId === '1' ? "New York" : staffId === '2' ? "California" : staffId === '3' ? "Illinois" : "Florida",
+    zipCode: staffId === '1' ? "10001" : staffId === '2' ? "90210" : staffId === '3' ? "60601" : "33101",
+    position: staffId === '1' ? "Chef" : staffId === '2' ? "Waitress" : staffId === '3' ? "Cashier" : "Sous Chef",
+    department: staffId === '1' ? "Kitchen" : staffId === '2' ? "Service" : staffId === '3' ? "Front Desk" : "Kitchen",
+    status: staffId === '1' ? "Active" : staffId === '2' ? "Active" : staffId === '3' ? "On Leave" : "Active",
+    shift: staffId === '1' ? "Morning" : staffId === '2' ? "Evening" : staffId === '3' ? "Night" : "Morning",
+    hireDate: staffId === '1' ? "2024-01-15" : staffId === '2' ? "2024-02-20" : staffId === '3' ? "2024-03-10" : "2024-01-20",
+    salary: staffId === '1' ? "45000" : staffId === '2' ? "32000" : staffId === '3' ? "28000" : "38000",
+    manager: staffId === '1' ? "Head Chef" : staffId === '2' ? "Service Manager" : staffId === '3' ? "Front Desk Manager" : "Head Chef",
+    emergencyContact: staffId === '1' ? "Jane Johnson" : staffId === '2' ? "John Wilson" : staffId === '3' ? "Sarah Davis" : "Mark Brown",
+    emergencyPhone: staffId === '1' ? "+1234567899" : staffId === '2' ? "+1234567898" : staffId === '3' ? "+1234567897" : "+1234567896",
+    notes: staffId === '1' ? "Experienced chef with 5+ years" : staffId === '2' ? "Excellent customer service skills" : staffId === '3' ? "Currently on medical leave" : "Great team player",
+    employeeId: `EMP00${staffId}`,
+    socialSecurity: "***-**-****",
+    dateOfBirth: staffId === '1' ? "1990-05-15" : staffId === '2' ? "1988-08-22" : staffId === '3' ? "1992-12-03" : "1987-03-18",
+    gender: staffId === '1' ? "Male" : staffId === '2' ? "Female" : staffId === '3' ? "Male" : "Female",
   })
 
   // Photos state for PhotoUpload component
@@ -188,26 +190,25 @@ export default function StaffAddForm() {
 
       try {
         // Simulate form submission
-        const newStaffData = {
+        const updatedStaffData = {
           ...staff,
           photos: photos,
-          createdAt: new Date().toISOString(),
-          id: Date.now() // Simulate ID generation
+          updatedAt: new Date().toISOString(),
         }
 
-        console.log("New staff data:", newStaffData)
+        console.log("Updated staff data:", updatedStaffData)
 
         // Simulate form submission delay
         await new Promise(resolve => setTimeout(resolve, 1500))
 
         // Show success message
-        showToast("Staff member added successfully!", "success")
+        showToast("Staff member updated successfully!", "success")
 
-        // Navigate back to staff list after successful creation
+        // Navigate back to staff list after successful update
         setTimeout(() => router.push("/admin/staff/list"), 2000)
       } catch (error) {
-        console.error("Error adding staff:", error)
-        showToast(error.message || "Failed to add staff member", "error")
+        console.error("Error updating staff:", error)
+        showToast(error.message || "Failed to update staff member", "error")
       } finally {
         setIsSubmitting(false)
       }
@@ -219,8 +220,8 @@ export default function StaffAddForm() {
   return (
     <div className="flex min-h-screen bg-white overflow-hidden">
       <Head>
-        <title>Add New Staff - Fudo Admin</title>
-        <meta name="description" content="Add new staff member to your restaurant" />
+        <title>Edit Staff Member - Fudo Admin</title>
+        <meta name="description" content="Edit staff member information" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
@@ -241,10 +242,10 @@ export default function StaffAddForm() {
                 <span className="mx-2 text-lg">›</span>
                 <span>Staff Management</span>
                 <span className="mx-2 text-lg">›</span>
-                <span>Add New Staff</span>
+                <span>Edit Staff #{staffId}</span>
               </div>
               <div className="flex items-center justify-between w-full">
-                <h1 className="text-2xl lg:text-3xl font-bold font-poppins">Add New Staff Member</h1>
+                <h1 className="text-2xl lg:text-3xl font-bold font-poppins">Edit Staff Member #{staffId}</h1>
               </div>
             </div>
           </div>
@@ -524,12 +525,12 @@ export default function StaffAddForm() {
                 {isSubmitting ? (
                   <>
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                    <span>Adding...</span>
+                    <span>Updating...</span>
                   </>
                 ) : (
                   <>
                     <Save size={16} />
-                    <span>Add Staff Member</span>
+                    <span>Update Staff Member</span>
                   </>
                 )}
               </button>

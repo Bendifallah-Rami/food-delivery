@@ -1,18 +1,20 @@
 "use client"
 
 import { useState, useCallback, useRef } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter, useParams } from "next/navigation"
 import Head from "next/head"
-import Sidebar from "../../../components/dashboard/sidebar"
-import Toast from "../../../components/form_components/toast"
-import FormField from "../../../components/form_components/form_field"
-import DropdownField from "../../../components/form_components/dropdown_field"
-import FormSection from "../../../components/form_components/form_section"
-import PhotoUpload from "../../../components/form_components/photoupload_field"
-import { User, Mail, Phone, MapPin, DollarSign, Calendar, Save, ArrowLeft } from "lucide-react"
+import Sidebar from "../../../../components/dashboard/sidebar"
+import Toast from "../../../../components/form_components/toast"
+import FormField from "../../../../components/form_components/form_field"
+import DropdownField from "../../../../components/form_components/dropdown_field"
+import FormSection from "../../../../components/form_components/form_section"
+import PhotoUpload from "../../../../components/form_components/photoupload_field"
+import { User, Mail, Phone, MapPin, UserCheck, Save, ArrowLeft } from "lucide-react"
 
-export default function StaffAddForm() {
+export default function UserEditForm() {
   const router = useRouter()
+  const params = useParams()
+  const userId = params.id
   const fileInputRef = useRef(null)
 
   // State for toast notifications
@@ -22,29 +24,22 @@ export default function StaffAddForm() {
     type: "success",
   })
 
-  // Form state for staff
-  const [staff, setStaff] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    address: "",
-    city: "",
-    state: "",
-    zipCode: "",
-    position: "",
-    department: "",
-    status: "Active",
-    shift: "Morning",
-    hireDate: "",
-    salary: "",
-    manager: "",
-    emergencyContact: "",
-    emergencyPhone: "",
-    notes: "",
-    employeeId: "",
-    socialSecurity: "",
-    dateOfBirth: "",
-    gender: "",
+  // Form state for user - with default values for editing
+  const [user, setUser] = useState({
+    name: userId === '1' ? "John Doe" : userId === '2' ? "Jane Smith" : "Mike Johnson",
+    email: userId === '1' ? "john.doe@example.com" : userId === '2' ? "jane.smith@example.com" : "mike.johnson@example.com",
+    phone: userId === '1' ? "+1234567890" : userId === '2' ? "+1234567891" : "+1234567892",
+    address: userId === '1' ? "123 Main St" : userId === '2' ? "456 Oak Ave" : "789 Pine Rd",
+    city: userId === '1' ? "New York" : userId === '2' ? "Los Angeles" : "Chicago",
+    state: userId === '1' ? "New York" : userId === '2' ? "California" : "Illinois",
+    zipCode: userId === '1' ? "10001" : userId === '2' ? "90210" : "60601",
+    status: userId === '1' ? "Active" : userId === '2' ? "Active" : "Inactive",
+    role: userId === '1' ? "Customer" : userId === '2' ? "VIP Customer" : "Customer",
+    dateOfBirth: userId === '1' ? "1990-05-15" : userId === '2' ? "1985-08-22" : "1992-12-03",
+    gender: userId === '1' ? "Male" : userId === '2' ? "Female" : "Male",
+    emergencyContact: userId === '1' ? "Jane Doe" : userId === '2' ? "John Smith" : "Sarah Johnson",
+    emergencyPhone: userId === '1' ? "+1234567899" : userId === '2' ? "+1234567898" : "+1234567897",
+    notes: userId === '1' ? "Regular customer, prefers spicy food" : userId === '2' ? "VIP customer, allergic to nuts" : "New customer",
   })
 
   // Photos state for PhotoUpload component
@@ -57,46 +52,16 @@ export default function StaffAddForm() {
   // Available options for dropdowns
   const statusOptions = [
     "Active",
-    "On Leave",
-    "Terminated",
-    "Probation"
+    "Inactive",
+    "Suspended",
+    "Pending"
   ]
 
-  const positionOptions = [
-    "Chef",
-    "Sous Chef",
-    "Line Cook",
-    "Prep Cook",
-    "Dishwasher",
-    "Server",
-    "Waitress",
-    "Bartender",
-    "Host/Hostess",
-    "Cashier",
-    "Manager",
-    "Assistant Manager",
-    "Delivery Driver",
-    "Cleaner",
-    "Other"
-  ]
-
-  const departmentOptions = [
-    "Kitchen",
-    "Service",
-    "Front Desk",
-    "Management",
-    "Delivery",
-    "Maintenance",
-    "Administration"
-  ]
-
-  const shiftOptions = [
-    "Morning",
-    "Evening",
-    "Night",
-    "Weekend",
-    "Full-time",
-    "Part-time"
+  const roleOptions = [
+    "Customer",
+    "VIP Customer",
+    "Corporate Client",
+    "Delivery Partner"
   ]
 
   const genderOptions = [
@@ -121,7 +86,7 @@ export default function StaffAddForm() {
 
   const handleInputChange = useCallback(
     (field, value) => {
-      setStaff((prev) => ({ ...prev, [field]: value }))
+      setUser((prev) => ({ ...prev, [field]: value }))
       // Clear error for this field when user starts typing
       if (errors[field]) {
         setErrors((prev) => ({ ...prev, [field]: null }))
@@ -131,7 +96,7 @@ export default function StaffAddForm() {
   )
 
   const handleCancel = () => {
-    router.push("/admin/staff/list")
+    router.push("/admin/user/list")
   }
 
   const showToast = useCallback((message, type = "success") => {
@@ -150,32 +115,31 @@ export default function StaffAddForm() {
     const newErrors = {}
 
     // Required fields
-    if (!staff.name.trim()) newErrors.name = "Name is required"
-    if (!staff.email.trim()) newErrors.email = "Email is required"
-    if (!staff.phone.trim()) newErrors.phone = "Phone is required"
-    if (!staff.position) newErrors.position = "Position is required"
-    if (!staff.department) newErrors.department = "Department is required"
-    if (!staff.hireDate) newErrors.hireDate = "Hire date is required"
-    if (!staff.salary.trim()) newErrors.salary = "Salary is required"
-    if (!staff.employeeId.trim()) newErrors.employeeId = "Employee ID is required"
+    if (!user.name.trim()) newErrors.name = "Name is required"
+    if (!user.email.trim()) newErrors.email = "Email is required"
+    if (!user.phone.trim()) newErrors.phone = "Phone is required"
+    if (!user.address.trim()) newErrors.address = "Address is required"
+    if (!user.city.trim()) newErrors.city = "City is required"
+    if (!user.state) newErrors.state = "State is required"
+    if (!user.zipCode.trim()) newErrors.zipCode = "Zip code is required"
 
     // Email validation
-    if (staff.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(staff.email)) {
+    if (user.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(user.email)) {
       newErrors.email = "Please enter a valid email address"
     }
 
     // Phone validation
-    if (staff.phone && !/^[\+]?[1-9][\d]{0,15}$/.test(staff.phone.replace(/\s/g, ''))) {
+    if (user.phone && !/^[\+]?[1-9][\d]{0,15}$/.test(user.phone.replace(/\s/g, ''))) {
       newErrors.phone = "Please enter a valid phone number"
     }
 
-    // Salary validation
-    if (staff.salary && (isNaN(staff.salary.replace(/[$,]/g, '')) || parseFloat(staff.salary.replace(/[$,]/g, '')) <= 0)) {
-      newErrors.salary = "Salary must be a valid positive number"
+    // Zip code validation
+    if (user.zipCode && !/^\d{5}(-\d{4})?$/.test(user.zipCode)) {
+      newErrors.zipCode = "Please enter a valid zip code"
     }
 
     return newErrors
-  }, [staff])
+  }, [user])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -188,26 +152,25 @@ export default function StaffAddForm() {
 
       try {
         // Simulate form submission
-        const newStaffData = {
-          ...staff,
+        const updatedUserData = {
+          ...user,
           photos: photos,
-          createdAt: new Date().toISOString(),
-          id: Date.now() // Simulate ID generation
+          updatedAt: new Date().toISOString(),
         }
 
-        console.log("New staff data:", newStaffData)
+        console.log("Updated user data:", updatedUserData)
 
         // Simulate form submission delay
         await new Promise(resolve => setTimeout(resolve, 1500))
 
         // Show success message
-        showToast("Staff member added successfully!", "success")
+        showToast("User updated successfully!", "success")
 
-        // Navigate back to staff list after successful creation
-        setTimeout(() => router.push("/admin/staff/list"), 2000)
+        // Navigate back to user list after successful update
+        setTimeout(() => router.push("/admin/user/list"), 2000)
       } catch (error) {
-        console.error("Error adding staff:", error)
-        showToast(error.message || "Failed to add staff member", "error")
+        console.error("Error updating user:", error)
+        showToast(error.message || "Failed to update user", "error")
       } finally {
         setIsSubmitting(false)
       }
@@ -219,8 +182,8 @@ export default function StaffAddForm() {
   return (
     <div className="flex min-h-screen bg-white overflow-hidden">
       <Head>
-        <title>Add New Staff - Fudo Admin</title>
-        <meta name="description" content="Add new staff member to your restaurant" />
+        <title>Edit User - Fudo Admin</title>
+        <meta name="description" content="Edit user information" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
@@ -228,7 +191,7 @@ export default function StaffAddForm() {
       <Toast message={toast.message} type={toast.type} visible={toast.visible} onClose={hideToast} />
 
       {/* Sidebar */}
-      <Sidebar activeItem="staff" />
+      <Sidebar activeItem="users" />
 
       {/* Main content */}
       <div className="flex-1 overflow-auto">
@@ -239,48 +202,37 @@ export default function StaffAddForm() {
               <div className="text-sm flex items-center font-poppins">
                 <span>Admin</span>
                 <span className="mx-2 text-lg">›</span>
-                <span>Staff Management</span>
+                <span>User Management</span>
                 <span className="mx-2 text-lg">›</span>
-                <span>Add New Staff</span>
+                <span>Edit User #{userId}</span>
               </div>
               <div className="flex items-center justify-between w-full">
-                <h1 className="text-2xl lg:text-3xl font-bold font-poppins">Add New Staff Member</h1>
+                <h1 className="text-2xl lg:text-3xl font-bold font-poppins">Edit User #{userId}</h1>
               </div>
             </div>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-8">
-            {/* Personal Information */}
-            <FormSection title="Personal Information">
+            {/* Basic Information */}
+            <FormSection title="Basic Information">
               <div className="p-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Name */}
                   <FormField
                     title="Full Name"
                     placeholder="e.g., John Doe"
-                    value={staff.name}
+                    value={user.name}
                     onChange={(e) => handleInputChange("name", e.target.value)}
                     error={errors.name}
                     required={true}
                     icon={<User size={16} />}
                   />
 
-                  {/* Employee ID */}
-                  <FormField
-                    title="Employee ID"
-                    placeholder="e.g., EMP001"
-                    value={staff.employeeId}
-                    onChange={(e) => handleInputChange("employeeId", e.target.value)}
-                    error={errors.employeeId}
-                    required={true}
-                    comment="Unique employee identifier"
-                  />
-
                   {/* Email */}
                   <FormField
                     title="Email Address"
-                    placeholder="e.g., john.doe@restaurant.com"
-                    value={staff.email}
+                    placeholder="e.g., john.doe@example.com"
+                    value={user.email}
                     onChange={(e) => handleInputChange("email", e.target.value)}
                     type="email"
                     icon={<Mail size={16} />}
@@ -292,7 +244,7 @@ export default function StaffAddForm() {
                   <FormField
                     title="Phone Number"
                     placeholder="e.g., +1234567890"
-                    value={staff.phone}
+                    value={user.phone}
                     onChange={(e) => handleInputChange("phone", e.target.value)}
                     type="tel"
                     icon={<Phone size={16} />}
@@ -303,31 +255,39 @@ export default function StaffAddForm() {
                   {/* Date of Birth */}
                   <FormField
                     title="Date of Birth"
-                    value={staff.dateOfBirth}
+                    value={user.dateOfBirth}
                     onChange={(e) => handleInputChange("dateOfBirth", e.target.value)}
                     type="date"
-                    icon={<Calendar size={16} />}
                     error={errors.dateOfBirth}
                   />
 
                   {/* Gender */}
                   <DropdownField
                     title="Gender"
-                    value={staff.gender}
+                    value={user.gender}
                     onChange={(value) => handleInputChange("gender", value)}
                     options={genderOptions}
                     error={errors.gender}
                     required={false}
                   />
 
-                  {/* Social Security */}
-                  <FormField
-                    title="Social Security Number"
-                    placeholder="e.g., 123-45-6789"
-                    value={staff.socialSecurity}
-                    onChange={(e) => handleInputChange("socialSecurity", e.target.value)}
-                    type="password"
-                    comment="For payroll purposes only"
+                  {/* Role */}
+                  <DropdownField
+                    title="Role"
+                    value={user.role}
+                    onChange={(value) => handleInputChange("role", value)}
+                    options={roleOptions}
+                    error={errors.role}
+                    required={false}
+                  />
+
+                  {/* Status */}
+                  <DropdownField
+                    title="Status"
+                    value={user.status}
+                    onChange={(value) => handleInputChange("status", value)}
+                    options={statusOptions}
+                    required={false}
                   />
                 </div>
               </div>
@@ -342,10 +302,11 @@ export default function StaffAddForm() {
                     <FormField
                       title="Street Address"
                       placeholder="e.g., 123 Main Street"
-                      value={staff.address}
+                      value={user.address}
                       onChange={(e) => handleInputChange("address", e.target.value)}
                       icon={<MapPin size={16} />}
                       error={errors.address}
+                      required={true}
                     />
                   </div>
 
@@ -353,103 +314,30 @@ export default function StaffAddForm() {
                   <FormField
                     title="City"
                     placeholder="e.g., New York"
-                    value={staff.city}
+                    value={user.city}
                     onChange={(e) => handleInputChange("city", e.target.value)}
                     error={errors.city}
+                    required={true}
                   />
 
                   {/* State */}
                   <DropdownField
                     title="State"
-                    value={staff.state}
+                    value={user.state}
                     onChange={(value) => handleInputChange("state", value)}
                     options={stateOptions}
                     error={errors.state}
+                    required={true}
                   />
 
                   {/* Zip Code */}
                   <FormField
                     title="Zip Code"
                     placeholder="e.g., 12345"
-                    value={staff.zipCode}
+                    value={user.zipCode}
                     onChange={(e) => handleInputChange("zipCode", e.target.value)}
                     error={errors.zipCode}
-                  />
-                </div>
-              </div>
-            </FormSection>
-
-            {/* Employment Information */}
-            <FormSection title="Employment Information">
-              <div className="p-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Position */}
-                  <DropdownField
-                    title="Position"
-                    value={staff.position}
-                    onChange={(value) => handleInputChange("position", value)}
-                    options={positionOptions}
-                    error={errors.position}
                     required={true}
-                  />
-
-                  {/* Department */}
-                  <DropdownField
-                    title="Department"
-                    value={staff.department}
-                    onChange={(value) => handleInputChange("department", value)}
-                    options={departmentOptions}
-                    error={errors.department}
-                    required={true}
-                  />
-
-                  {/* Hire Date */}
-                  <FormField
-                    title="Hire Date"
-                    value={staff.hireDate}
-                    onChange={(e) => handleInputChange("hireDate", e.target.value)}
-                    type="date"
-                    icon={<Calendar size={16} />}
-                    error={errors.hireDate}
-                    required={true}
-                  />
-
-                  {/* Salary */}
-                  <FormField
-                    title="Salary"
-                    placeholder="e.g., $45,000 or 45000"
-                    value={staff.salary}
-                    onChange={(e) => handleInputChange("salary", e.target.value)}
-                    icon={<DollarSign size={16} />}
-                    error={errors.salary}
-                    required={true}
-                  />
-
-                  {/* Shift */}
-                  <DropdownField
-                    title="Shift"
-                    value={staff.shift}
-                    onChange={(value) => handleInputChange("shift", value)}
-                    options={shiftOptions}
-                    required={false}
-                  />
-
-                  {/* Status */}
-                  <DropdownField
-                    title="Status"
-                    value={staff.status}
-                    onChange={(value) => handleInputChange("status", value)}
-                    options={statusOptions}
-                    required={false}
-                  />
-
-                  {/* Manager */}
-                  <FormField
-                    title="Manager"
-                    placeholder="e.g., Head Chef"
-                    value={staff.manager}
-                    onChange={(e) => handleInputChange("manager", e.target.value)}
-                    icon={<User size={16} />}
                   />
                 </div>
               </div>
@@ -463,7 +351,7 @@ export default function StaffAddForm() {
                   <FormField
                     title="Emergency Contact Name"
                     placeholder="e.g., Jane Doe"
-                    value={staff.emergencyContact}
+                    value={user.emergencyContact}
                     onChange={(e) => handleInputChange("emergencyContact", e.target.value)}
                     icon={<User size={16} />}
                   />
@@ -472,7 +360,7 @@ export default function StaffAddForm() {
                   <FormField
                     title="Emergency Contact Phone"
                     placeholder="e.g., +1234567890"
-                    value={staff.emergencyPhone}
+                    value={user.emergencyPhone}
                     onChange={(e) => handleInputChange("emergencyPhone", e.target.value)}
                     type="tel"
                     icon={<Phone size={16} />}
@@ -483,8 +371,8 @@ export default function StaffAddForm() {
                 <div className="mt-6">
                   <FormField
                     title="Notes"
-                    placeholder="Additional notes about the staff member..."
-                    value={staff.notes}
+                    placeholder="Additional notes about the user..."
+                    value={user.notes}
                     onChange={(e) => handleInputChange("notes", e.target.value)}
                     isTextarea={true}
                   />
@@ -496,11 +384,11 @@ export default function StaffAddForm() {
             <FormSection title="Profile Photo">
               <div className="p-6">
                 <PhotoUpload
-                  title="Staff Photo"
+                  title="Profile Photo"
                   photos={photos}
                   setPhotos={setPhotos}
                   maxPhotos={1}
-                  comment="Upload a staff photo. Recommended: 400x400px, max 2MB"
+                  comment="Upload a profile photo. Recommended: 400x400px, max 2MB"
                 />
               </div>
             </FormSection>
@@ -524,12 +412,12 @@ export default function StaffAddForm() {
                 {isSubmitting ? (
                   <>
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                    <span>Adding...</span>
+                    <span>Updating...</span>
                   </>
                 ) : (
                   <>
                     <Save size={16} />
-                    <span>Add Staff Member</span>
+                    <span>Update User</span>
                   </>
                 )}
               </button>
