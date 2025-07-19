@@ -1,5 +1,4 @@
 @import "tailwindcss";
-
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -9,13 +8,22 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-poppins: 'Poppins', sans-serif;
+  
+  /* Fudo Brand Colors */
+  --color-primary: #EB5757;
+  --color-secondary: #FEE9DE;
+  --color-text: #333333;
+  --color-text-light: #666666;
+  
+  /* Custom Tailwind colors */
+  --color-card-bg: #284CFF0D;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
-    --font-poppins: 'Poppins', sans-serif;
   }
 }
 
