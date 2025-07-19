@@ -397,7 +397,7 @@ export const SearchHeader = ({
           {showAddButton && (
             <button
               onClick={onAddNew}
-              className="bg-primary-600 hover:bg-primary-700 text-white rounded-md px-3 py-2 text-sm flex items-center gap-2"
+              className="bg-[#EB5757] hover:bg-red-600 text-white rounded-md px-3 py-2 text-sm flex items-center gap-2"
             >
               <span className="sm:block">{addButtonText}</span>
               <svg

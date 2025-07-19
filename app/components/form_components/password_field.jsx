@@ -2,7 +2,6 @@
 
 import { useState } from "react"
 import { Eye, EyeOff, AlertTriangle } from 'lucide-react'
-import { useLanguage } from "../../translations/contexts/languageContext"
 
 // Password strength validation function
 const validatePasswordStrength = (password) => {
@@ -35,7 +34,6 @@ const PasswordField = ({
   icon = null,
 }) => {
   const [showPassword, setShowPassword] = useState(false)
-  const { t } = useLanguage()
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword)
@@ -60,47 +58,24 @@ const PasswordField = ({
   const strengthLevel = getStrengthLevel()
 
   const getStrengthText = () => {
-    try {
-      if (strengthLevel === 0)
-        return {
-          text: t("newPassword","strengthEmpty"),
-          color: "text-neutral-400",
-        }
-      if (strengthLevel < 3)
-        return {
-          text: t("newPassword","strengthWeak"),
-          color: "text-red-500",
-        }
-      if (strengthLevel < 5)
-        return {
-          text: t("newPassword","strengthMedium"),
-          color: "text-yellow-500",
-        }
+    if (strengthLevel === 0)
       return {
-        text: t("newPassword","strengthStrong"),
-        color: "text-green-500",
+        text: "No Password",
+        color: "text-neutral-400",
       }
-    } catch (e) {
-      // Fallback to userEdit translations
-      if (strengthLevel === 0)
-        return {
-          text: t("userEdit","password","tooWeak"),
-          color: "text-neutral-400",
-        }
-      if (strengthLevel < 3)
-        return {
-          text: t("userEdit","password","weak"),
-          color: "text-red-500",
-        }
-      if (strengthLevel < 4)
-        return {
-          text: t("userEdit","password","fair"),
-          color: "text-yellow-500",
-        }
+    if (strengthLevel < 3)
       return {
-        text: t("userEdit","password","strong"),
-        color: "text-green-500",
+        text: "Weak",
+        color: "text-red-500",
       }
+    if (strengthLevel < 4)
+      return {
+        text: "Fair",
+        color: "text-yellow-500",
+      }
+    return {
+      text: "Strong",
+      color: "text-green-500",
     }
   }
 
@@ -109,7 +84,7 @@ const PasswordField = ({
   return (
     <div className="flex flex-col gap-2">
       {title && (
-        <label className="block text-sm font-medium pl-4 text-neutral-950 dark:text-neutral-100">
+        <label className="block text-sm text-[#333333]">
           {title} {required && <span className="text-red-500">*</span>}
         </label>
       )}
@@ -122,8 +97,8 @@ const PasswordField = ({
           value={value}
           onChange={onChange}
           className={`w-full ${icon ? "pl-10" : "pl-4"} pr-10 py-2 md:py-3 border ${
-            error ? "border-red-300 bg-red-50" : "border-none bg-neutral-100 dark:bg-neutral-950"
-          } rounded-lg shadow-sm focus:ring-2 focus:ring-primary-600 dark:focus:ring-primary-300 transition-all text-neutral-950 dark:text-neutral-100`}
+            error ? "border-red-300 bg-red-50" : "border-none bg-[#E7E7E7]"
+          } rounded-lg shadow-sm focus:ring-2 focus:ring-blue-200 focus:border-blue-500 transition-all text-[#333333]`}
         />
 
         {icon && <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">{icon}</div>}
@@ -131,7 +106,7 @@ const PasswordField = ({
         <button
           type="button"
           onClick={togglePasswordVisibility}
-          className="absolute inset-y-0 right-0 pr-3 flex items-center text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-300"
+          className="absolute inset-y-0 right-0 pr-3 flex items-center text-neutral-500 hover:text-neutral-700"
         >
           {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
         </button>
@@ -141,12 +116,12 @@ const PasswordField = ({
       {showStrengthIndicator && value && (
         <div className="mt-2">
           <div className="flex justify-between items-center mb-1">
-            <span className="text-xs font-medium text-neutral-500 dark:text-neutral-400">
-              {t("newPassword","passwordStrength")}
+            <span className="text-xs font-medium text-neutral-500">
+              Password Strength
             </span>
             <span className={`text-xs font-medium ${color}`}>{text}</span>
           </div>
-          <div className="w-full h-1 bg-neutral-200 dark:bg-neutral-700 rounded-full overflow-hidden">
+          <div className="w-full h-1 bg-neutral-200 rounded-full overflow-hidden">
             <div
               className={`h-full ${
                 strengthLevel === 0
@@ -162,36 +137,36 @@ const PasswordField = ({
 
           <div className="grid grid-cols-2 gap-2 mt-3">
             <div
-              className={`text-xs ${strength.hasMinLength ? "text-green-500" : "text-neutral-500 dark:text-neutral-400"}`}
+              className={`text-xs ${strength.hasMinLength ? "text-green-500" : "text-neutral-500"}`}
             >
               <span className={strength.hasMinLength ? "font-medium" : ""}>
-                ✓ {t("newPassword","minLength")}
+                ✓ At least 8 characters
               </span>
             </div>
             <div
-              className={`text-xs ${strength.hasUpperCase ? "text-green-500" : "text-neutral-500 dark:text-neutral-400"}`}
+              className={`text-xs ${strength.hasUpperCase ? "text-green-500" : "text-neutral-500"}`}
             >
               <span className={strength.hasUpperCase ? "font-medium" : ""}>
-                ✓ {t("newPassword","upperCase")}
+                ✓ One uppercase letter
               </span>
             </div>
             <div
-              className={`text-xs ${strength.hasLowerCase ? "text-green-500" : "text-neutral-500 dark:text-neutral-400"}`}
+              className={`text-xs ${strength.hasLowerCase ? "text-green-500" : "text-neutral-500"}`}
             >
               <span className={strength.hasLowerCase ? "font-medium" : ""}>
-                ✓ {t("newPassword","lowerCase")}
+                ✓ One lowercase letter
               </span>
             </div>
             <div
-              className={`text-xs ${strength.hasNumber ? "text-green-500" : "text-neutral-500 dark:text-neutral-400"}`}
+              className={`text-xs ${strength.hasNumber ? "text-green-500" : "text-neutral-500"}`}
             >
-              <span className={strength.hasNumber ? "font-medium" : ""}>✓ {t("newPassword","number")}</span>
+              <span className={strength.hasNumber ? "font-medium" : ""}>✓ One number</span>
             </div>
             <div
-              className={`text-xs ${strength.hasSpecialChar ? "text-green-500" : "text-neutral-500 dark:text-neutral-400"}`}
+              className={`text-xs ${strength.hasSpecialChar ? "text-green-500" : "text-neutral-500"}`}
             >
               <span className={strength.hasSpecialChar ? "font-medium" : ""}>
-                ✓ {t("newPassword","specialChar")}
+                ✓ One special character
               </span>
             </div>
           </div>
@@ -205,7 +180,7 @@ const PasswordField = ({
         </p>
       )}
 
-      {comment && !error && <div className="text-xs text-neutral-500 dark:text-neutral-400 mt-1 pl-4">{comment}</div>}
+      {comment && !error && <div className="text-xs text-[#333333] mt-1 pl-4">{comment}</div>}
     </div>
   )
 }

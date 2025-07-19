@@ -91,7 +91,7 @@ const StateCards = ({ cardsData }) => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {cards.map((card) => (
-          <div key={card.id} className="px-6 py-3 rounded-lg bg-[#EB5757]/10">
+          <div key={card.id} className="bg-[#EB5757]/10 rounded-xl shadow-sm p-6 border border-[#EB5757]/20 hover:shadow-md transition-shadow">
             <div className="flex flex-row items-center justify-start gap-3 mb-2">
             <div className="mb-2 bg-[#FEE9DE] w-min p-2 rounded-full">{card.icon}</div>
             <h2 className="text-xl font-semibold text-[#333333] font-poppins mb-2">{card.title}</h2>

@@ -157,20 +157,13 @@ export default function StaffList() {
               </div>
               <div className="flex items-center justify-between w-full">
                 <h1 className="text-2xl lg:text-3xl font-bold font-poppins">Staff Management</h1>
-                <button
-                  onClick={handleAddStaff}
-                  className="bg-[#EB5757] text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors font-poppins flex items-center space-x-2"
-                >
-                  <Plus size={16} />
-                  <span>Add New Staff</span>
-                </button>
               </div>
             </div>
           </div>
 
           {/* Statistics Cards */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <div className="bg-[#EB5757]/10 p-6 rounded-lg">
+            <div className="bg-[#EB5757]/10 rounded-xl shadow-sm p-6 border border-[#EB5757]/20 hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600 font-poppins">Total Staff</p>
@@ -182,7 +175,7 @@ export default function StaffList() {
               </div>
             </div>
 
-            <div className="bg-[#EB5757]/10 p-6 rounded-lg">
+            <div className="bg-[#EB5757]/10 rounded-xl shadow-sm p-6 border border-[#EB5757]/20 hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600 font-poppins">Active Staff</p>
@@ -194,7 +187,7 @@ export default function StaffList() {
               </div>
             </div>
 
-            <div className="bg-[#EB5757]/10 p-6 rounded-lg">
+            <div className="bg-[#EB5757]/10 rounded-xl shadow-sm p-6 border border-[#EB5757]/20 hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600 font-poppins">On Leave</p>
@@ -206,7 +199,7 @@ export default function StaffList() {
               </div>
             </div>
 
-            <div className="bg-[#EB5757]/10 p-6 rounded-lg">
+            <div className="bg-[#EB5757]/10 rounded-xl shadow-sm p-6 border border-[#EB5757]/20 hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600 font-poppins">Morning Shift</p>
@@ -220,13 +213,16 @@ export default function StaffList() {
           </div>
 
           {/* Staff Table */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+          <div className="">
             <DynamicTable
               data={staff}
               columns={columns}
               actions={actions}
               searchPlaceholder="Search staff..."
               itemsPerPage={10}
+                onAddNew={handleAddStaff}
+                onEdit={handleEditStaff}
+                onDelete={handleDeleteStaff}
             />
           </div>
         </div>

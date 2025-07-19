@@ -9,6 +9,7 @@ import FormField from "../../../components/form_components/form_field"
 import DropdownField from "../../../components/form_components/dropdown_field"
 import FormSection from "../../../components/form_components/form_section"
 import PhotoUpload from "../../../components/form_components/photoupload_field"
+import PasswordField from "../../../components/form_components/password_field"
 import { User, Mail, Phone, MapPin, UserCheck, Save, ArrowLeft } from "lucide-react"
 
 export default function UserAddForm() {
@@ -27,6 +28,8 @@ export default function UserAddForm() {
     name: "",
     email: "",
     phone: "",
+    password: "",
+    confirmPassword: "",
     address: "",
     city: "",
     state: "",
@@ -116,6 +119,8 @@ export default function UserAddForm() {
     if (!user.name.trim()) newErrors.name = "Name is required"
     if (!user.email.trim()) newErrors.email = "Email is required"
     if (!user.phone.trim()) newErrors.phone = "Phone is required"
+    if (!user.password.trim()) newErrors.password = "Password is required"
+    if (!user.confirmPassword.trim()) newErrors.confirmPassword = "Please confirm password"
     if (!user.address.trim()) newErrors.address = "Address is required"
     if (!user.city.trim()) newErrors.city = "City is required"
     if (!user.state) newErrors.state = "State is required"
@@ -124,6 +129,16 @@ export default function UserAddForm() {
     // Email validation
     if (user.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(user.email)) {
       newErrors.email = "Please enter a valid email address"
+    }
+
+    // Password validation
+    if (user.password && user.password.length < 8) {
+      newErrors.password = "Password must be at least 8 characters long"
+    }
+
+    // Password confirmation
+    if (user.password !== user.confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match"
     }
 
     // Phone validation
@@ -288,6 +303,37 @@ export default function UserAddForm() {
                     options={statusOptions}
                     required={false}
                   />
+                </div>
+              </div>
+            </FormSection>
+
+            {/* Login Credentials */}
+            <FormSection title="Login Credentials">
+              <div className="p-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Password */}
+                  <PasswordField
+                    title="Password"
+                    placeholder="Enter password (min. 8 characters)"
+                    value={user.password}
+                    onChange={(e) => handleInputChange("password", e.target.value)}
+                    error={errors.password}
+                    required={true}
+                  />
+
+                  {/* Confirm Password */}
+                  <PasswordField
+                    title="Confirm Password"
+                    placeholder="Confirm password"
+                    value={user.confirmPassword}
+                    onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
+                    error={errors.confirmPassword}
+                    required={true}
+                    showStrengthIndicator={false}
+                  />
+                </div>
+                <div className="mt-3 text-sm text-gray-600">
+                  These credentials will allow the user to log into the system. Make sure to provide a secure password.
                 </div>
               </div>
             </FormSection>

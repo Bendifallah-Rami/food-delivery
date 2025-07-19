@@ -6,7 +6,7 @@ import Head from "next/head"
 import Sidebar from "../../../components/dashboard/sidebar"
 import DynamicTable from "../../../components/dynamicTable1"
 import Toast from "../../../components/form_components/toast"
-import { ShoppingCart, Clock, CheckCircle, XCircle, DollarSign, Package, Plus, Edit, Trash2, Eye } from "lucide-react"
+import { ShoppingCart, Clock, CheckCircle, XCircle, DollarSign, Package, Plus, Edit, Trash2, Eye, Archive } from "lucide-react"
 
 export default function OrdersList() {
   const router = useRouter()
@@ -18,8 +18,10 @@ export default function OrdersList() {
     type: "success",
   })
 
+  const [isArchiving, setIsArchiving] = useState(false)
+
   // Mock data for orders
-  const [orders] = useState([ 
+  const [orders, setOrders] = useState([ 
     {
       id: 1,
       orderNumber: "ORD-2024-001",
@@ -32,7 +34,8 @@ export default function OrdersList() {
       deliveryAddress: "123 Main St, City, State",
       paymentMethod: "Credit Card",
       estimatedDelivery: "30 mins",
-      notes: "Extra cheese, no onions"
+      notes: "Extra cheese, no onions",
+      completedDate: null
     },
     {
       id: 2,
@@ -46,7 +49,8 @@ export default function OrdersList() {
       deliveryAddress: "456 Oak Ave, City, State",
       paymentMethod: "PayPal",
       estimatedDelivery: "45 mins",
-      notes: "Thin crust pizza"
+      notes: "Thin crust pizza",
+      completedDate: null
     },
     {
       id: 3,
@@ -60,7 +64,8 @@ export default function OrdersList() {
       deliveryAddress: "789 Pine Rd, City, State",
       paymentMethod: "Cash",
       estimatedDelivery: "Delivered",
-      notes: "No croutons"
+      notes: "No croutons",
+      completedDate: "2024-01-14T14:30:00"
     },
     {
       id: 4,
@@ -74,7 +79,8 @@ export default function OrdersList() {
       deliveryAddress: "321 Elm St, City, State",
       paymentMethod: "Credit Card",
       estimatedDelivery: "Cancelled",
-      notes: "Customer requested cancellation"
+      notes: "Customer requested cancellation",
+      completedDate: null
     }
   ])
 
@@ -86,6 +92,46 @@ export default function OrdersList() {
   const totalRevenue = orders
     .filter(order => order.status === "Delivered")
     .reduce((sum, order) => sum + order.totalAmount, 0)
+
+  // Archive completed orders older than 24 hours
+  const archiveOldOrders = async () => {
+    setIsArchiving(true)
+    
+    try {
+      const now = new Date()
+      const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000)
+      
+      const toArchive = orders.filter(order => {
+        if (order.status === "Delivered" && order.completedDate) {
+          const completedDate = new Date(order.completedDate)
+          return completedDate < twentyFourHoursAgo
+        }
+        return false
+      })
+      
+      if (toArchive.length > 0) {
+        // Remove archived orders from current list
+        const remainingOrders = orders.filter(order => 
+          !toArchive.find(archived => archived.id === order.id)
+        )
+        
+        setOrders(remainingOrders)
+        
+        // In a real app, you would send this to your backend
+        console.log(`Archived ${toArchive.length} orders:`, toArchive)
+        
+        // Show success message
+        showToast(`Successfully archived ${toArchive.length} old orders`, "success")
+      } else {
+        showToast("No orders to archive (no completed orders older than 24 hours)", "info")
+      }
+    } catch (error) {
+      console.error("Error archiving orders:", error)
+      showToast("Failed to archive orders", "error")
+    } finally {
+      setIsArchiving(false)
+    }
+  }
 
   // Table configuration
   const columns = [
@@ -155,7 +201,12 @@ export default function OrdersList() {
       </Head>
 
       {/* Toast Notification */}
-      <Toast message={toast.message} type={toast.type} visible={toast.visible} onClose={hideToast} />
+      <Toast
+        message={toast.message}
+        type={toast.type}
+        visible={toast.visible}
+        onClose={hideToast}
+      />
 
       {/* Sidebar */}
       <Sidebar activeItem="orders" />
@@ -172,13 +223,27 @@ export default function OrdersList() {
                 <span>Orders Management</span>
               </div>
               <div className="flex items-center justify-between w-full">
-                <h1 className="text-2xl lg:text-3xl font-bold font-poppins">Orders Management</h1>
+                <h1 className="text-2xl lg:text-3xl font-bold font-poppins">
+                  Orders Management
+                </h1>
                 <button
-                  onClick={handleAddOrder}
-                  className="bg-[#EB5757] text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors font-poppins flex items-center space-x-2"
+                  onClick={archiveOldOrders}
+                  disabled={isArchiving}
+                  className={`px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors font-poppins flex items-center space-x-2 ${
+                    isArchiving ? "opacity-75 cursor-not-allowed" : ""
+                  }`}
                 >
-                  <Plus size={16} />
-                  <span>Add New Order</span>
+                  {isArchiving ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                      <span>Archiving...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Archive size={16} />
+                      <span>Archive Old Orders</span>
+                    </>
+                  )}
                 </button>
               </div>
             </div>
@@ -186,11 +251,15 @@ export default function OrdersList() {
 
           {/* Statistics Cards */}
           <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
-            <div className="bg-[#EB5757]/10 p-6 rounded-lg">
+            <div className="bg-[#EB5757]/10 rounded-xl shadow-sm p-6 border border-[#EB5757]/20 hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 font-poppins">Total Orders</p>
-                  <p className="text-2xl font-bold text-[#333333] font-poppins">{totalOrders}</p>
+                  <p className="text-sm text-gray-600 font-poppins">
+                    Total Orders
+                  </p>
+                  <p className="text-2xl font-bold text-[#333333] font-poppins">
+                    {totalOrders}
+                  </p>
                 </div>
                 <div className="bg-[#EB5757] p-3 rounded-full">
                   <ShoppingCart className="w-6 h-6 text-white" />
@@ -198,11 +267,13 @@ export default function OrdersList() {
               </div>
             </div>
 
-            <div className="bg-[#EB5757]/10 p-6 rounded-lg">
+            <div className="bg-[#EB5757]/10 rounded-xl shadow-sm p-6 border border-[#EB5757]/20 hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600 font-poppins">Pending</p>
-                  <p className="text-2xl font-bold text-[#333333] font-poppins">{pendingOrders}</p>
+                  <p className="text-2xl font-bold text-[#333333] font-poppins">
+                    {pendingOrders}
+                  </p>
                 </div>
                 <div className="bg-orange-500 p-3 rounded-full">
                   <Clock className="w-6 h-6 text-white" />
@@ -210,11 +281,15 @@ export default function OrdersList() {
               </div>
             </div>
 
-            <div className="bg-[#EB5757]/10 p-6 rounded-lg">
+            <div className="bg-[#EB5757]/10 rounded-xl shadow-sm p-6 border border-[#EB5757]/20 hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 font-poppins">Completed</p>
-                  <p className="text-2xl font-bold text-[#333333] font-poppins">{completedOrders}</p>
+                  <p className="text-sm text-gray-600 font-poppins">
+                    Completed
+                  </p>
+                  <p className="text-2xl font-bold text-[#333333] font-poppins">
+                    {completedOrders}
+                  </p>
                 </div>
                 <div className="bg-green-500 p-3 rounded-full">
                   <CheckCircle className="w-6 h-6 text-white" />
@@ -222,11 +297,15 @@ export default function OrdersList() {
               </div>
             </div>
 
-            <div className="bg-[#EB5757]/10 p-6 rounded-lg">
+            <div className="bg-[#EB5757]/10 rounded-xl shadow-sm p-6 border border-[#EB5757]/20 hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-600 font-poppins">Cancelled</p>
-                  <p className="text-2xl font-bold text-[#333333] font-poppins">{cancelledOrders}</p>
+                  <p className="text-sm text-gray-600 font-poppins">
+                    Cancelled
+                  </p>
+                  <p className="text-2xl font-bold text-[#333333] font-poppins">
+                    {cancelledOrders}
+                  </p>
                 </div>
                 <div className="bg-red-500 p-3 rounded-full">
                   <XCircle className="w-6 h-6 text-white" />
@@ -234,11 +313,13 @@ export default function OrdersList() {
               </div>
             </div>
 
-            <div className="bg-[#EB5757]/10 p-6 rounded-lg">
+            <div className="bg-[#EB5757]/10 rounded-xl shadow-sm p-6 border border-[#EB5757]/20 hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600 font-poppins">Revenue</p>
-                  <p className="text-2xl font-bold text-[#333333] font-poppins">${totalRevenue.toFixed(2)}</p>
+                  <p className="text-2xl font-bold text-[#333333] font-poppins">
+                    ${totalRevenue.toFixed(2)}
+                  </p>
                 </div>
                 <div className="bg-blue-500 p-3 rounded-full">
                   <DollarSign className="w-6 h-6 text-white" />
@@ -248,17 +329,21 @@ export default function OrdersList() {
           </div>
 
           {/* Orders Table */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+          <div className="">
             <DynamicTable
               data={orders}
               columns={columns}
               actions={actions}
+              onAddNew={handleAddOrder}
+              onEdit={handleEditOrder}
+              onDelete={handleDeleteOrder}
               searchPlaceholder="Search orders..."
+              addButtonText="Add New Order"
               itemsPerPage={10}
             />
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

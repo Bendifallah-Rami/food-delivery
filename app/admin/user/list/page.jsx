@@ -98,23 +98,34 @@ export default function UserList() {
     showToast(`User ${user.name} deleted successfully`, "success")
   }
 
-  const actions = [
-    {
-      label: "Edit",
-      icon: Edit,
-      onClick: handleEditUser,
-      color: "text-blue-600 hover:text-blue-800"
-    },
-    {
-      label: "Delete",
-      icon: Trash2,
-      onClick: handleDeleteUser,
-      color: "text-red-600 hover:text-red-800"
+//   const actions = [
+//     {
+//       label: "Edit",
+//       icon: Edit,
+//       onClick: handleEditUser,
+//       color: "text-blue-600 hover:text-blue-800"
+//     },
+//     {
+//       label: "Delete",
+//       icon: Trash2,
+//       onClick: handleDeleteUser,
+//       color: "text-red-600 hover:text-red-800"
+//     }
+//   ]
+
+const handleEdit = (user) => {
+    router.push(`/admin/user/edit/${user.id}`)
     }
-  ]
+const handleDelete = (user) => {
+    showToast(`User ${user.name} deleted successfully`, "success")
+    // Add your delete logic here
+}
+const handleAdd = () => {
+    router.push("/admin/user/add")
+  }
 
   return (
-    <div className="flex min-h-screen bg-white overflow-hidden">
+    <div className="flex min-h-screen overflow-hidden">
       <Head>
         <title>User Management - Fudo Admin</title>
         <meta name="description" content="Manage users in your restaurant" />
@@ -125,7 +136,7 @@ export default function UserList() {
       <Toast message={toast.message} type={toast.type} visible={toast.visible} onClose={hideToast} />
 
       {/* Sidebar */}
-      <Sidebar activeItem="users" />
+      <Sidebar activeItem="customers" />
 
       {/* Main content */}
       <div className="flex-1 overflow-auto">
@@ -140,20 +151,14 @@ export default function UserList() {
               </div>
               <div className="flex items-center justify-between w-full">
                 <h1 className="text-2xl lg:text-3xl font-bold font-poppins">User Management</h1>
-                <button
-                  onClick={handleAddUser}
-                  className="bg-[#EB5757] text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors font-poppins flex items-center space-x-2"
-                >
-                  <Plus size={16} />
-                  <span>Add New User</span>
-                </button>
+           
               </div>
             </div>
           </div>
 
           {/* Statistics Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div className="bg-[#EB5757]/10 p-6 rounded-lg">
+            <div className="bg-[#EB5757]/10 rounded-xl shadow-sm p-6 border border-[#EB5757]/20 hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600 font-poppins">Total Users</p>
@@ -165,7 +170,7 @@ export default function UserList() {
               </div>
             </div>
 
-            <div className="bg-[#EB5757]/10 p-6 rounded-lg">
+            <div className="bg-[#EB5757]/10 rounded-xl shadow-sm p-6 border border-[#EB5757]/20 hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600 font-poppins">Active Users</p>
@@ -177,7 +182,7 @@ export default function UserList() {
               </div>
             </div>
 
-            <div className="bg-[#EB5757]/10 p-6 rounded-lg">
+            <div className="bg-[#EB5757]/10 rounded-xl shadow-sm p-6 border border-[#EB5757]/20 hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600 font-poppins">Inactive Users</p>
@@ -191,11 +196,13 @@ export default function UserList() {
           </div>
 
           {/* Users Table */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+          <div className="">
             <DynamicTable
               data={users}
               columns={columns}
-              actions={actions}
+              onEdit={handleEdit}
+            onDelete={handleDelete} // Changed to open the confirmation modal
+            onAddNew={handleAdd} // Added onAddNew prop for adding new orders
               searchPlaceholder="Search users..."
               itemsPerPage={10}
             />

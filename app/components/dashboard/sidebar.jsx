@@ -35,12 +35,13 @@ const Tooltip = ({ children, text }) => (
 const Sidebar = ({ activeItem = "dashboard" }) => {
   const router = useRouter()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [windowWidth, setWindowWidth] = useState(typeof window !== "undefined" ? window.innerWidth : 0)
+  const [windowWidth, setWindowWidth] = useState(0)
   const [isCollapsed, setIsCollapsed] = useState(false)
+  const [isClient, setIsClient] = useState(false)
 
   const navItems = [
     { key: "dashboard", label: "Dashboard", link: "/admin/dashboard", icon: <Home size={18} /> },
-    { key: "orders", label: "Orders", link: "/admin/orders", icon: <ShoppingBag size={18} /> },
+    { key: "orders", label: "Orders", link: "/admin/orders/list", icon: <ShoppingBag size={18} /> },
     { key: "menu", label: "Menu", link: "/admin/stock/list", icon: <UtensilsCrossed size={18} /> },
     { key: "delivery", label: "Delivery", link: "/admin/delivery", icon: <Truck size={18} /> },
     { key: "staff", label: "Staff", link: "/admin/staff/list", icon: <Users size={18} /> },
@@ -51,27 +52,25 @@ const Sidebar = ({ activeItem = "dashboard" }) => {
   ]
 
   useEffect(() => {
+    setIsClient(true)
+    
     const handleResize = () => {
       setWindowWidth(window.innerWidth)
       if (window.innerWidth >= 768) {
         setIsMobileMenuOpen(false)
       }
 
-      if (typeof window !== "undefined") {
-        const isCollapsed = localStorage.getItem("sidebarCollapsed")
-        if (isCollapsed === null) {
-          setIsCollapsed(window.innerWidth < 1280 && window.innerWidth >= 768)
-        } else {
-          setIsCollapsed(JSON.parse(isCollapsed))
-        }
+      const savedCollapsed = localStorage.getItem("sidebarCollapsed")
+      if (savedCollapsed === null) {
+        setIsCollapsed(window.innerWidth < 1280 && window.innerWidth >= 768)
+      } else {
+        setIsCollapsed(JSON.parse(savedCollapsed))
       }
     }
 
-    if (typeof window !== "undefined") {
-      window.addEventListener("resize", handleResize)
-      handleResize()
-      return () => window.removeEventListener("resize", handleResize)
-    }
+    handleResize()
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
   }, [])
 
   const toggleMobileMenu = () => {
@@ -81,7 +80,7 @@ const Sidebar = ({ activeItem = "dashboard" }) => {
   const toggleCollapse = () => {
     const newCollapsed = !isCollapsed
     setIsCollapsed(newCollapsed)
-    if (typeof window !== "undefined") {
+    if (isClient) {
       localStorage.setItem("sidebarCollapsed", JSON.stringify(newCollapsed))
     }
   }
