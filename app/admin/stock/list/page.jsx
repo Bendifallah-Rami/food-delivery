@@ -6,13 +6,14 @@ import Head from "next/head"
 import DynamicTable from "../../../components/dynamicTable1"
 import Sidebar from "../../../components/dashboard/sidebar"
 import Toast from "../../../components/dashboard/toast"
-import { UtensilsCrossed, Package, CheckCircle, XCircle, AlertTriangle, Clock } from "lucide-react"
+import { UtensilsCrossed, Package, CheckCircle, XCircle, AlertTriangle, Clock, Archive } from "lucide-react"
 
 export default function MenuManagement() {
   const router = useRouter()
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(true)
   const [deleteModal, setDeleteModal] = useState({ isOpen: false, item: null })
+  const [isArchiving, setIsArchiving] = useState(false)
 
   // State for toast notifications
   const [toast, setToast] = useState({
@@ -46,7 +47,8 @@ export default function MenuManagement() {
           price: "$12.99", 
           stock: 25, 
           status: "Available",
-          description: "Juicy beef patty with fresh lettuce and tomato"
+          description: "Juicy beef patty with fresh lettuce and tomato",
+          lastUpdated: "2024-01-10T10:30:00"
         },
         { 
           id: 2, 
@@ -56,7 +58,8 @@ export default function MenuManagement() {
           price: "$18.50", 
           stock: 15, 
           status: "Available",
-          description: "Classic pizza with fresh mozzarella and basil"
+          description: "Classic pizza with fresh mozzarella and basil",
+          lastUpdated: "2024-01-12T14:20:00"
         },
         { 
           id: 3, 
@@ -66,7 +69,8 @@ export default function MenuManagement() {
           price: "$8.99", 
           stock: 5, 
           status: "Low Stock",
-          description: "Crispy wings with your choice of sauce"
+          description: "Crispy wings with your choice of sauce",
+          lastUpdated: "2024-01-08T09:15:00"
         },
         { 
           id: 4, 
@@ -76,7 +80,8 @@ export default function MenuManagement() {
           price: "$7.99", 
           stock: 20, 
           status: "Available",
-          description: "Fresh romaine lettuce with Caesar dressing"
+          description: "Fresh romaine lettuce with Caesar dressing",
+          lastUpdated: "2024-01-14T16:45:00"
         },
         { 
           id: 5, 
@@ -86,7 +91,8 @@ export default function MenuManagement() {
           price: "$14.99", 
           stock: 0, 
           status: "Out of Stock",
-          description: "Grilled fish with cabbage slaw and chipotle mayo"
+          description: "Grilled fish with cabbage slaw and chipotle mayo",
+          lastUpdated: "2024-01-05T11:30:00"
         },
         { 
           id: 6, 
@@ -96,7 +102,8 @@ export default function MenuManagement() {
           price: "$6.99", 
           stock: 12, 
           status: "Available",
-          description: "Rich chocolate cake with chocolate frosting"
+          description: "Rich chocolate cake with chocolate frosting",
+          lastUpdated: "2024-01-13T13:20:00"
         },
         { 
           id: 7, 
@@ -106,7 +113,8 @@ export default function MenuManagement() {
           price: "$11.99", 
           stock: 3, 
           status: "Low Stock",
-          description: "Plant-based patty with fresh vegetables"
+          description: "Plant-based patty with fresh vegetables",
+          lastUpdated: "2024-01-07T08:45:00"
         },
         { 
           id: 8, 
@@ -116,7 +124,8 @@ export default function MenuManagement() {
           price: "$9.99", 
           stock: 18, 
           status: "Available",
-          description: "Spicy buffalo wings with blue cheese dip"
+          description: "Spicy buffalo wings with blue cheese dip",
+          lastUpdated: "2024-01-11T12:15:00"
         },
         { 
           id: 9, 
@@ -126,7 +135,8 @@ export default function MenuManagement() {
           price: "$16.99", 
           stock: 8, 
           status: "Available",
-          description: "Creamy pasta with bacon and parmesan"
+          description: "Creamy pasta with bacon and parmesan",
+          lastUpdated: "2024-01-09T15:30:00"
         },
         { 
           id: 10, 
@@ -136,7 +146,8 @@ export default function MenuManagement() {
           price: "$3.99", 
           stock: 0, 
           status: "Out of Stock",
-          description: "Cold brew coffee with ice"
+          description: "Cold brew coffee with ice",
+          lastUpdated: "2024-01-06T07:20:00"
         },
       ]
 
@@ -233,6 +244,53 @@ export default function MenuManagement() {
       console.error("Error deleting menu item:", error)
       showToast("Failed to delete menu item", "error")
       setDeleteModal({ isOpen: false, item: null })
+    }
+  }
+
+  // Archive old out of stock items older than 30 days
+  const archiveOldItems = async () => {
+    setIsArchiving(true)
+    
+    try {
+      const now = new Date()
+      const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
+      
+      const toArchive = data.filter(item => {
+        if (item.Status === "Out of Stock" && item.lastUpdated) {
+          const lastUpdatedDate = new Date(item.lastUpdated)
+          return lastUpdatedDate < thirtyDaysAgo
+        }
+        return false
+      })
+      
+      if (toArchive.length > 0) {
+        // Remove archived items from current list
+        const remainingItems = data.filter(item => 
+          !toArchive.find(archived => archived.id === item.id)
+        )
+        
+        setData(remainingItems)
+        
+        // Update statistics
+        setMenuData(prev => ({
+          ...prev,
+          totalItems: remainingItems.length,
+          outOfStock: remainingItems.filter(item => item.Status === "Out of Stock").length
+        }))
+        
+        // In a real app, you would send this to your backend
+        console.log(`Archived ${toArchive.length} items:`, toArchive)
+        
+        // Show success message
+        showToast(`Successfully archived ${toArchive.length} old out-of-stock items`, "success")
+      } else {
+        showToast("No items to archive (no out-of-stock items older than 30 days)", "info")
+      }
+    } catch (error) {
+      console.error("Error archiving items:", error)
+      showToast("Failed to archive items", "error")
+    } finally {
+      setIsArchiving(false)
     }
   }
 
@@ -347,7 +405,28 @@ export default function MenuManagement() {
                 <span className="mx-2 text-lg">›</span>
                 <span>Menu Management</span>
               </div>
-              <h1 className="text-2xl lg:text-3xl font-bold font-poppins">Menu Items</h1>
+              <div className="flex items-center justify-between w-full">
+                <h1 className="text-2xl lg:text-3xl font-bold font-poppins">Menu Items</h1>
+                <button
+                  onClick={archiveOldItems}
+                  disabled={isArchiving}
+                  className={`px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors font-poppins flex items-center space-x-2 ${
+                    isArchiving ? "opacity-75 cursor-not-allowed" : ""
+                  }`}
+                >
+                  {isArchiving ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                      <span>Archiving...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Archive size={16} />
+                      <span>Archive Old Items</span>
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
           </div>
 
@@ -392,6 +471,7 @@ export default function MenuManagement() {
                   "Stock": { title: "Stock Quantity" },
                   "Status": { title: "Status" },
                   description: { hidden: true }, // Hide description column
+                  lastUpdated: { hidden: true }, // Hide lastUpdated column
                 }}
                 addButtonText="Add Menu Item"
                 dropdownFields={["Category", "Status"]}

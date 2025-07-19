@@ -16,6 +16,7 @@ import {
   ChevronRight,
   Truck,
   UtensilsCrossed,
+  Archive,
 } from "lucide-react"
 
 import { useState, useEffect } from "react"
@@ -46,6 +47,7 @@ const Sidebar = ({ activeItem = "dashboard" }) => {
     { key: "delivery", label: "Delivery", link: "/admin/delivery", icon: <Truck size={18} /> },
     { key: "staff", label: "Staff", link: "/admin/staff/list", icon: <Users size={18} /> },
     { key: "customers", label: "Customers", link: "/admin/user/list", icon: <User size={18} /> },
+    { key: "archives", label: "Archives", link: "/admin/archives", icon: <Archive size={18} /> },
     { key: "reports", label: "Reports", link: "/admin/reports", icon: <BarChart2 size={18} /> },
     { key: "notifications", label: "Notifications", link: "/admin/notification", icon: <Bell size={18} /> },
     { key: "settings", label: "Settings", link: "/admin/settings", icon: <Settings size={18} /> },
