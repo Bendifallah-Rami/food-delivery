@@ -1,10 +1,18 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useCallback,useEffect } from "react"
 import { Clock, CheckCircle, ChefHat, Package, User, Timer, AlertTriangle } from "lucide-react"
+import { useStaff } from "../context/StaffContext"
 
 export default function MealManagement() {
-  const [orders, setOrders] = useState([])
+  const { 
+    orders, 
+    confirmOrder, 
+    rejectOrder, 
+    startCooking, 
+    markReady 
+  } = useStaff()
+  
   const [toast, setToast] = useState({
     visible: false,
     message: "",
@@ -13,52 +21,8 @@ export default function MealManagement() {
 
   // Mock orders data
   useEffect(() => {
-    const mockOrders = [
-      {
-        id: "ORD12345",
-        customerName: "John Doe",
-        items: [
-          { name: "Classic Burger", quantity: 2 },
-          { name: "French Fries", quantity: 1 },
-          { name: "Coca Cola", quantity: 2 }
-        ],
-        status: "Confirmed",
-        orderTime: "14:30",
-        estimatedTime: "15 mins",
-        priority: "Normal",
-        totalAmount: "$28.97"
-      },
-      {
-        id: "ORD12346",
-        customerName: "Sarah Wilson",
-        items: [
-          { name: "Margherita Pizza", quantity: 1 },
-          { name: "Caesar Salad", quantity: 1 }
-        ],
-        status: "Preparing",
-        orderTime: "14:35",
-        estimatedTime: "12 mins",
-        priority: "High",
-        startedAt: "14:37",
-        totalAmount: "$26.48"
-      },
-      {
-        id: "ORD12347",
-        customerName: "Mike Johnson",
-        items: [
-          { name: "Chicken Wings", quantity: 1 },
-          { name: "Buffalo Sauce", quantity: 1 }
-        ],
-        status: "Ready",
-        orderTime: "14:20",
-        estimatedTime: "Complete",
-        priority: "Normal",
-        startedAt: "14:22",
-        readyAt: "14:35",
-        totalAmount: "$18.99"
-      }
-    ]
-    setOrders(mockOrders)
+    // Orders are now managed by the StaffContext
+    // This useEffect is no longer needed
   }, [])
 
   const showToast = useCallback((message, type = "success") => {
@@ -72,26 +36,31 @@ export default function MealManagement() {
     }, 3000)
   }, [])
 
-  const startCooking = (orderId) => {
-    setOrders(prev => prev.map(order => 
-      order.id === orderId 
-        ? { ...order, status: "Preparing", startedAt: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) }
-        : order
-    ))
+  // Wrapper functions to add toast notifications
+  const handleConfirmOrder = (orderId) => {
+    confirmOrder(orderId)
+    showToast(`Order ${orderId} confirmed and sent to kitchen`, "success")
+  }
+
+  const handleRejectOrder = (orderId) => {
+    rejectOrder(orderId)
+    showToast(`Order ${orderId} has been rejected`, "error")
+  }
+
+  const handleStartCooking = (orderId) => {
+    startCooking(orderId)
     showToast(`Started cooking order ${orderId}`, "success")
   }
 
-  const markReady = (orderId) => {
-    setOrders(prev => prev.map(order => 
-      order.id === orderId 
-        ? { ...order, status: "Ready", readyAt: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) }
-        : order
-    ))
+  const handleMarkReady = (orderId) => {
+    markReady(orderId)
     showToast(`Order ${orderId} is ready for pickup`, "success")
   }
 
   const getStatusIcon = (status) => {
     switch (status) {
+      case "Pending Confirmation":
+        return <AlertTriangle className="w-5 h-5 text-yellow-500" />
       case "Confirmed":
         return <CheckCircle className="w-5 h-5 text-[#EB5757]" />
       case "Preparing":
@@ -105,6 +74,8 @@ export default function MealManagement() {
 
   const getStatusColor = (status) => {
     switch (status) {
+      case "Pending Confirmation":
+        return "bg-yellow-50 border-yellow-200"
       case "Confirmed":
         return "bg-[#EB5757]/10 border-[#EB5757]/20"
       case "Preparing":
@@ -317,9 +288,26 @@ export default function MealManagement() {
 
                 {/* Action Buttons */}
                 <div className="space-y-3">
+                  {order.status === "Pending Confirmation" && (
+                    <div className="space-y-2">
+                      <button
+                        onClick={() => handleConfirmOrder(order.id)}
+                        className="w-full bg-green-500 text-white py-3 px-4 rounded-lg font-medium font-poppins hover:bg-green-600 transition-colors shadow-sm"
+                      >
+                        ✅ Confirm Order
+                      </button>
+                      <button
+                        onClick={() => handleRejectOrder(order.id)}
+                        className="w-full bg-red-500 text-white py-3 px-4 rounded-lg font-medium font-poppins hover:bg-red-600 transition-colors shadow-sm"
+                      >
+                        ❌ Reject Order
+                      </button>
+                    </div>
+                  )}
+
                   {order.status === "Confirmed" && (
                     <button
-                      onClick={() => startCooking(order.id)}
+                      onClick={() => handleStartCooking(order.id)}
                       className="w-full bg-[#EB5757] text-white py-3 px-4 rounded-lg font-medium font-poppins hover:bg-red-600 transition-colors shadow-sm"
                     >
                       🔥 Start Cooking
@@ -328,7 +316,7 @@ export default function MealManagement() {
 
                   {order.status === "Preparing" && (
                     <button
-                      onClick={() => markReady(order.id)}
+                      onClick={() => handleMarkReady(order.id)}
                       className="w-full bg-green-500 text-white py-3 px-4 rounded-lg font-medium font-poppins hover:bg-green-600 transition-colors shadow-sm"
                     >
                       ✅ Mark Ready

@@ -1,82 +1,28 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
-import { Package, Truck, CheckCircle, MapPin, Phone, Clock, User, Timer, AlertTriangle } from "lucide-react"
+import { useState, useCallback } from "react"
+import { Package, Truck, CheckCircle, MapPin, Phone, Clock, User, Timer, AlertTriangle, Bell } from "lucide-react"
+import { useStaff } from "../context/StaffContext"
 
 export default function DeliveryManagement() {
-  const [orders, setOrders] = useState([])
-  const [deliveryPersons, setDeliveryPersons] = useState([])
+  const { 
+    orders, 
+    deliveryPersons, 
+    assignDelivery, 
+    startDelivery, 
+    completeDelivery 
+  } = useStaff()
+  
   const [toast, setToast] = useState({
     visible: false,
     message: "",
     type: "success",
   })
 
-  // Mock data
-  useEffect(() => {
-    const mockOrders = [
-      {
-        id: "ORD12347",
-        customerName: "Mike Johnson",
-        customerPhone: "+1234567890",
-        customerAddress: "123 Main St, New York, NY 10001",
-        items: [
-          { name: "Chicken Wings", quantity: 1 },
-          { name: "Buffalo Sauce", quantity: 1 }
-        ],
-        status: "Ready",
-        orderTime: "14:20",
-        readyAt: "14:35",
-        totalAmount: "$18.99",
-        priority: "Normal"
-      },
-      {
-        id: "ORD12348",
-        customerName: "Emma Davis",
-        customerPhone: "+1234567891",
-        customerAddress: "456 Oak Ave, Brooklyn, NY 11201",
-        items: [
-          { name: "Margherita Pizza", quantity: 1 },
-          { name: "Garlic Bread", quantity: 1 }
-        ],
-        status: "Assigned",
-        orderTime: "14:25",
-        readyAt: "14:40",
-        totalAmount: "$24.50",
-        priority: "High",
-        assignedTo: "John Smith"
-      },
-      {
-        id: "ORD12349",
-        customerName: "Robert Brown",
-        customerPhone: "+1234567892",
-        customerAddress: "789 Pine St, Manhattan, NY 10002",
-        items: [
-          { name: "Classic Burger", quantity: 2 },
-          { name: "French Fries", quantity: 1 }
-        ],
-        status: "Picked Up",
-        orderTime: "14:15",
-        readyAt: "14:30",
-        pickedUpAt: "14:45",
-        totalAmount: "$31.98",
-        priority: "Normal",
-        assignedTo: "Sarah Wilson"
-      }
-    ]
-
-    const mockDeliveryPersons = [
-      { id: 1, name: "John Smith", status: "Available" },
-      { id: 2, name: "Sarah Wilson", status: "On Delivery" },
-      { id: 3, name: "Mike Rodriguez", status: "Available" },
-      { id: 4, name: "UberEats Driver", status: "External" },
-      { id: 5, name: "DoorDash Driver", status: "External" },
-      { id: 6, name: "Grubhub Driver", status: "External" }
-    ]
-
-    setOrders(mockOrders)
-    setDeliveryPersons(mockDeliveryPersons)
-  }, [])
+  // Filter orders relevant to delivery (Ready, Assigned, Out for Delivery)
+  const deliveryOrders = orders.filter(order => 
+    ["Ready", "Assigned", "Out for Delivery", "Delivered"].includes(order.status)
+  )
 
   const showToast = useCallback((message, type = "success") => {
     setToast({
@@ -89,35 +35,24 @@ export default function DeliveryManagement() {
     }, 3000)
   }, [])
 
-  const assignDelivery = (orderId, deliveryPerson) => {
-    if (!deliveryPerson) {
+  // Wrapper functions to add toast notifications
+  const handleAssignDelivery = (orderId, deliveryPersonId) => {
+    if (!deliveryPersonId) {
       showToast("Please select a delivery person", "error")
       return
     }
-
-    setOrders(prev => prev.map(order => 
-      order.id === orderId 
-        ? { ...order, status: "Assigned", assignedTo: deliveryPerson }
-        : order
-    ))
-    showToast(`Order ${orderId} assigned to ${deliveryPerson}`, "success")
+    assignDelivery(orderId, deliveryPersonId)
+    const deliveryPerson = deliveryPersons.find(dp => dp.id === deliveryPersonId)
+    showToast(`Order ${orderId} assigned to ${deliveryPerson?.name}`, "success")
   }
 
-  const markPickedUp = (orderId) => {
-    setOrders(prev => prev.map(order => 
-      order.id === orderId 
-        ? { ...order, status: "Picked Up", pickedUpAt: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) }
-        : order
-    ))
-    showToast(`Order ${orderId} marked as picked up`, "success")
+  const handleStartDelivery = (orderId) => {
+    startDelivery(orderId)
+    showToast(`Order ${orderId} is out for delivery`, "success")
   }
 
-  const markDelivered = (orderId) => {
-    setOrders(prev => prev.map(order => 
-      order.id === orderId 
-        ? { ...order, status: "Delivered", deliveredAt: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) }
-        : order
-    ))
+  const handleCompleteDelivery = (orderId) => {
+    completeDelivery(orderId)
     showToast(`Order ${orderId} delivered successfully`, "success")
   }
 
@@ -127,7 +62,7 @@ export default function DeliveryManagement() {
         return <Package className="w-5 h-5 text-green-500" />
       case "Assigned":
         return <Truck className="w-5 h-5 text-blue-500" />
-      case "Picked Up":
+      case "Out for Delivery":
         return <MapPin className="w-5 h-5 text-orange-500" />
       case "Delivered":
         return <CheckCircle className="w-5 h-5 text-green-600" />
@@ -200,6 +135,13 @@ export default function DeliveryManagement() {
               </div>
               <div className="flex space-x-3">
                 <a
+                  href="/staff/notifications"
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg font-poppins hover:bg-blue-700 transition-colors flex items-center space-x-2"
+                >
+                  <Bell className="w-4 h-4" />
+                  <span>Notifications</span>
+                </a>
+                <a
                   href="/staff/meals"
                   className="px-4 py-2 bg-[#EB5757] text-white rounded-lg font-poppins hover:bg-red-600 transition-colors"
                 >
@@ -271,7 +213,7 @@ export default function DeliveryManagement() {
 
         {/* Orders Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {orders.map((order) => (
+          {deliveryOrders.map((order) => (
             <div key={order.id} className={`bg-white rounded-xl shadow-sm border-2 ${getStatusColor(order.status)} hover:shadow-md transition-all duration-200`}>
               <div className="p-6">
                 {/* Order Header */}
@@ -390,12 +332,12 @@ export default function DeliveryManagement() {
                     <div className="space-y-3">
                       <select 
                         className="w-full p-3 border border-gray-300 rounded-lg font-poppins bg-white"
-                        onChange={(e) => assignDelivery(order.id, e.target.value)}
+                        onChange={(e) => handleAssignDelivery(order.id, e.target.value)}
                         defaultValue=""
                       >
                         <option value="">Select Delivery Person</option>
                         {deliveryPersons.map((person) => (
-                          <option key={person.id} value={person.name}>
+                          <option key={person.id} value={person.id}>
                             {person.name} {person.status !== "Available" && `(${person.status})`}
                           </option>
                         ))}
@@ -405,16 +347,16 @@ export default function DeliveryManagement() {
 
                   {order.status === "Assigned" && (
                     <button
-                      onClick={() => markPickedUp(order.id)}
+                      onClick={() => handleStartDelivery(order.id)}
                       className="w-full bg-orange-500 text-white py-3 px-4 rounded-lg font-medium font-poppins hover:bg-orange-600 transition-colors shadow-sm"
                     >
-                      🚚 Mark as Picked Up
+                      🚚 Start Delivery
                     </button>
                   )}
 
-                  {order.status === "Picked Up" && (
+                  {order.status === "Out for Delivery" && (
                     <button
-                      onClick={() => markDelivered(order.id)}
+                      onClick={() => handleCompleteDelivery(order.id)}
                       className="w-full bg-green-500 text-white py-3 px-4 rounded-lg font-medium font-poppins hover:bg-green-600 transition-colors shadow-sm"
                     >
                       ✅ Mark as Delivered
